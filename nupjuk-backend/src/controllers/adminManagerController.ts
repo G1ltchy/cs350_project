@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
+import crypto from "crypto";
+import bcrypt from "bcrypt";
 import { z } from "zod";
 import { Manager } from "../models/Manager";
 import { PasswordResetRequest } from "../models/PasswordResetRequest";
+import { sendApprovalEmail, sendRejectionEmail, sendPasswordResetEmail } from "../utils/mailer";
 
 const rejectSchema = z.object({
   reason: z.string().optional(),
@@ -44,6 +47,8 @@ export async function approveManager(req: Request, res: Response): Promise<void>
   manager.status = "approved";
   await manager.save();
 
+  sendApprovalEmail(manager.email, manager.username).catch(console.error);
+
   res.json({ message: `${manager.username} 계정이 승인되었습니다.` });
 }
 
@@ -71,6 +76,8 @@ export async function rejectManager(req: Request, res: Response): Promise<void> 
 
   manager.status = "rejected";
   await manager.save();
+
+  sendRejectionEmail(manager.email, manager.username).catch(console.error);
 
   res.json({ message: `${manager.username} 계정이 거절되었습니다.` });
 }
@@ -109,8 +116,23 @@ export async function resolvePasswordResetRequest(req: Request, res: Response): 
     return;
   }
 
+  const manager = await Manager.findById(request.managerId);
+  if (!manager) {
+    res.status(404).json({ message: "해당 매니저 계정을 찾을 수 없습니다." });
+    return;
+  }
+
+  // 임시 비밀번호 생성 (12자 영숫자)
+  const tempPassword = crypto.randomBytes(6).toString("base64url");
+
+  const pepper = process.env.PASSWORD_PEPPER ?? "";
+  manager.passwordHash = await bcrypt.hash(pepper + tempPassword, 12);
+  await manager.save();
+
   request.status = "resolved";
   await request.save();
+
+  sendPasswordResetEmail(manager.email, manager.username, tempPassword).catch(console.error);
 
   res.json({ message: "비밀번호 재설정 요청이 처리 완료되었습니다." });
 }
