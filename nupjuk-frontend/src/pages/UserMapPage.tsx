@@ -19,7 +19,11 @@ import { getMarkerId } from "../types/marker";
 
 type CategoryFilter = MarkerCategory | "all";
 
-export default function UserMapPage() {
+type UserMapPageProps = {
+  onGoToLogin?: () => void;
+};
+
+export default function UserMapPage({ onGoToLogin }: UserMapPageProps) {
   const [markers, setMarkers] = useState<MarkerSummary[]>([]);
   const [selectedMarker, setSelectedMarker] = useState<MarkerDetail | null>(
     null
@@ -155,7 +159,32 @@ export default function UserMapPage() {
           zIndex: 10
         }}
       >
-        <SearchBar value={query} onChange={setQuery} />
+        <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <SearchBar value={query} onChange={setQuery} />
+          </div>
+          {onGoToLogin && (
+            <button
+              type="button"
+              onClick={onGoToLogin}
+              style={{
+                flexShrink: 0,
+                marginTop: 2,
+                padding: "10px 14px",
+                borderRadius: 12,
+                border: "none",
+                background: "#374151",
+                color: "#ffffff",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.12)"
+              }}
+            >
+              Manager Login
+            </button>
+          )}
+        </div>
         <CategoryChips selected={category} onSelect={setCategory} />
 
         {isUsingMock && (
