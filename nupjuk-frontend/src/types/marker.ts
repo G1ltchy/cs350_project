@@ -16,6 +16,11 @@ export interface ParentMarkerInfo {
   titleEn?: string;
 }
 
+export interface CreatedByInfo {
+  _id: string;
+  username?: string;
+}
+
 export interface MarkerSummary {
   _id?: string;
   id?: string;
@@ -33,6 +38,8 @@ export interface MarkerSummary {
   imageUrl?: string;
 
   status?: "active" | "inactive";
+
+  createdBy?: string | CreatedByInfo;
 
   dynamicType?: DynamicType;
 
@@ -72,12 +79,4 @@ export type DynamicInfoResponse =
 
 export function getMarkerId(marker: MarkerSummary): string {
   return marker.id ?? marker._id ?? "";
-}
-
-export function getParentTitle(parentId: MarkerSummary["parentId"]): string | null {
-  if (!parentId || typeof parentId === "string") {
-    return null;
-  }
-
-  return parentId.titleKo;
 }

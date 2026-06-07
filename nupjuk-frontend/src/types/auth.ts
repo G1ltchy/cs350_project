@@ -16,5 +16,9 @@ export type RegisterRequestBody = {
 export type ForgotPasswordRequestBody = {
   username: string;
   email: string;
-  message?: string;
+};
+
+export type ForgotPasswordResponse = {
+  message: string;
+  tempPasswordAssigned: boolean;
 };

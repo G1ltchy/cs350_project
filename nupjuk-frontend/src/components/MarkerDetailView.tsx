@@ -1,10 +1,18 @@
 import ReactMarkdown from "react-markdown";
+import { useLanguage } from "../context/LanguageContext";
+import { getUi } from "../i18n/ui";
+import {
+  getMarkerId,
+  getMarkerMarkdown,
+  getMarkerSubtitle,
+  getMarkerTitle,
+  getParentTitle
+} from "../lib/markerDisplay";
 import type {
   DynamicInfoResponse,
   MarkerDetail,
   MarkerSummary
 } from "../types/marker";
-import { getMarkerId, getParentTitle } from "../types/marker";
 
 interface MarkerDetailViewProps {
   marker: MarkerDetail;
@@ -12,38 +20,41 @@ interface MarkerDetailViewProps {
   onChildClick: (child: MarkerSummary) => void;
 }
 
-function formatRemainingTime(seconds: number | null): string {
-  if (seconds === null) {
-    return "남은 시간을 계산할 수 없습니다.";
-  }
-
-  if (seconds <= 0) {
-    return "이벤트가 종료되었습니다.";
-  }
-
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-
-  if (hours > 0) {
-    return `${hours}시간 ${minutes}분 남음`;
-  }
-
-  return `${minutes}분 남음`;
-}
-
 export default function MarkerDetailView({
   marker,
   dynamicInfo,
   onChildClick
 }: MarkerDetailViewProps) {
-  const markdownText =
-    marker.markdownKo ?? marker.markdownEn ?? "표시할 설명이 없습니다.";
+  const { language } = useLanguage();
+  const ui = getUi(language);
 
-  const parentTitle = getParentTitle(marker.parentId);
+  const title = getMarkerTitle(marker, language);
+  const subtitle = getMarkerSubtitle(marker, language);
+  const markdownText = getMarkerMarkdown(marker, language, ui.map.noDescription);
+  const parentTitle = getParentTitle(marker.parentId, language);
+
+  function formatRemainingTime(seconds: number | null): string {
+    if (seconds === null) {
+      return ui.map.eventRemainingUnknown;
+    }
+
+    if (seconds <= 0) {
+      return ui.map.eventEnded;
+    }
+
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+
+    if (hours > 0) {
+      return ui.map.eventRemainingHours(hours, minutes);
+    }
+
+    return ui.map.eventRemainingMinutes(minutes);
+  }
 
   function openNavigation() {
     const url = `https://map.kakao.com/link/to/${encodeURIComponent(
-      marker.titleKo
+      title
     )},${marker.latitude},${marker.longitude}`;
 
     window.open(url, "_blank");
@@ -62,7 +73,7 @@ export default function MarkerDetailView({
       {marker.imageUrl && (
         <img
           src={marker.imageUrl}
-          alt={marker.titleKo}
+          alt={title}
           style={{
             width: "100%",
             maxHeight: 180,
@@ -73,15 +84,15 @@ export default function MarkerDetailView({
         />
       )}
 
-      <h2 style={{ marginBottom: 4 }}>{marker.titleKo}</h2>
+      <h2 style={{ marginBottom: 4 }}>{title}</h2>
 
-      {marker.titleEn && (
-        <p style={{ color: "#6b7280", marginTop: 0 }}>{marker.titleEn}</p>
+      {subtitle && (
+        <p style={{ color: "#6b7280", marginTop: 0 }}>{subtitle}</p>
       )}
 
       {parentTitle && (
         <p style={{ color: "#6b7280", marginTop: 0 }}>
-          Parent: {parentTitle}
+          {ui.map.parent}: {parentTitle}
         </p>
       )}
 
@@ -112,10 +123,8 @@ export default function MarkerDetailView({
             background: "#f9fafb"
           }}
         >
-          <h3 style={{ marginTop: 0 }}>식당 정보</h3>
-          <p style={{ color: "#4b5563" }}>
-            식단 정보는 외부 페이지에서 확인할 수 있습니다.
-          </p>
+          <h3 style={{ marginTop: 0 }}>{ui.map.diningInfo}</h3>
+          <p style={{ color: "#4b5563" }}>{ui.map.diningHint}</p>
           {dynamicInfo.externalUrl && (
             <button
               onClick={() => openExternalUrl(dynamicInfo.externalUrl)}
@@ -127,7 +136,7 @@ export default function MarkerDetailView({
                 cursor: "pointer"
               }}
             >
-              관련 정보 보기
+              {ui.map.viewExternal}
             </button>
           )}
         </section>
@@ -142,10 +151,8 @@ export default function MarkerDetailView({
             background: "#f9fafb"
           }}
         >
-          <h3 style={{ marginTop: 0 }}>버스 정보</h3>
-          <p style={{ color: "#4b5563" }}>
-            버스 정보는 외부 페이지에서 확인할 수 있습니다.
-          </p>
+          <h3 style={{ marginTop: 0 }}>{ui.map.busInfo}</h3>
+          <p style={{ color: "#4b5563" }}>{ui.map.busHint}</p>
           {dynamicInfo.externalUrl && (
             <button
               onClick={() => openExternalUrl(dynamicInfo.externalUrl)}
@@ -157,7 +164,7 @@ export default function MarkerDetailView({
                 cursor: "pointer"
               }}
             >
-              관련 정보 보기
+              {ui.map.viewExternal}
             </button>
           )}
         </section>
@@ -172,14 +179,14 @@ export default function MarkerDetailView({
             background: "#f9fafb"
           }}
         >
-          <h3 style={{ marginTop: 0 }}>이벤트 정보</h3>
+          <h3 style={{ marginTop: 0 }}>{ui.map.eventInfo}</h3>
           <p>{formatRemainingTime(dynamicInfo.remainingSeconds)}</p>
         </section>
       )}
 
       {marker.children && marker.children.length > 0 && (
         <section style={{ marginTop: 16 }}>
-          <h3>하위 장소</h3>
+          <h3>{ui.map.childPlaces}</h3>
           {marker.children.map((child) => {
             const childId = getMarkerId(child);
 
@@ -199,7 +206,7 @@ export default function MarkerDetailView({
                   cursor: "pointer"
                 }}
               >
-                {child.titleKo}
+                {getMarkerTitle(child, language)}
               </button>
             );
           })}
@@ -221,7 +228,7 @@ export default function MarkerDetailView({
           cursor: "pointer"
         }}
       >
-        길찾기
+        {ui.map.directions}
       </button>
     </div>
   );

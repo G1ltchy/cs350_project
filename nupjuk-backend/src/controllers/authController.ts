@@ -1,9 +1,11 @@
+import crypto from "crypto";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { Manager } from "../models/Manager";
 import { PasswordResetRequest } from "../models/PasswordResetRequest";
+import { sendPasswordResetEmail } from "../utils/mailer";
 
 const loginSchema = z.object({
   username: z.string().min(1),
@@ -85,20 +87,40 @@ export async function registerRequest(req: Request, res: Response): Promise<void
 }
 
 export async function forgotPasswordRequest(req: Request, res: Response): Promise<void> {
-  const ALWAYS_OK = { message: "요청이 접수되었습니다. 관리자가 확인 후 연락드립니다." };
+  const NOT_FOUND_MESSAGE = "ID 또는 이메일이 올바르지 않습니다.";
+  const ASSIGNED_MESSAGE =
+    "임시 비밀번호가 이메일로 발급되었습니다. 로그인 후 비밀번호를 변경해주세요.";
 
   const parsed = forgotPasswordSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(200).json(ALWAYS_OK);
+    res.status(400).json({ message: NOT_FOUND_MESSAGE });
     return;
   }
 
-  const { username, email, message } = parsed.data;
+  const { username, email } = parsed.data;
 
   const manager = await Manager.findOne({ username, email });
-  if (manager) {
-    await PasswordResetRequest.create({ managerId: manager._id, message });
+  if (!manager) {
+    res.status(404).json({ message: NOT_FOUND_MESSAGE });
+    return;
   }
 
-  res.status(200).json(ALWAYS_OK);
+  const tempPassword = crypto.randomBytes(6).toString("base64url");
+  const pepper = process.env.PASSWORD_PEPPER ?? "";
+  manager.passwordHash = await bcrypt.hash(pepper + tempPassword, 12);
+  await manager.save();
+
+  await PasswordResetRequest.create({
+    managerId: manager._id,
+    status: "resolved",
+  });
+
+  sendPasswordResetEmail(manager.email, manager.username, tempPassword).catch(
+    console.error
+  );
+
+  res.status(200).json({
+    message: ASSIGNED_MESSAGE,
+    tempPasswordAssigned: true,
+  });
 }

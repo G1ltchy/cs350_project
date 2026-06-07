@@ -1,11 +1,16 @@
 import axios from "axios";
 import { type CSSProperties, FormEvent, useState } from "react";
+import AuthPageHeader from "../components/AuthPageHeader";
+import { useLanguage } from "../context/LanguageContext";
 import { login } from "../api/auth";
+import { getUi } from "../i18n/ui";
+import { setAuthToken } from "../lib/authToken";
 
 type ManagerLoginPageProps = {
   onGoToMap: () => void;
   onGoToRegister: () => void;
   onGoToForgotPassword: () => void;
+  onLoginSuccess: () => void;
 };
 
 type LoginStatus =
@@ -17,8 +22,13 @@ type LoginStatus =
 export default function ManagerLoginPage({
   onGoToMap,
   onGoToRegister,
-  onGoToForgotPassword
+  onGoToForgotPassword,
+  onLoginSuccess
 }: ManagerLoginPageProps) {
+  const { language } = useLanguage();
+  const ui = getUi(language);
+  const m = ui.manager;
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState<LoginStatus>({ kind: "idle" });
@@ -28,10 +38,7 @@ export default function ManagerLoginPage({
 
     const trimmedUsername = username.trim();
     if (!trimmedUsername || !password) {
-      setStatus({
-        kind: "error",
-        message: "Manager ID와 Password를 입력해 주세요."
-      });
+      setStatus({ kind: "error", message: m.errors.loginFields });
       return;
     }
 
@@ -39,13 +46,10 @@ export default function ManagerLoginPage({
 
     try {
       const token = await login(trimmedUsername, password);
-      localStorage.setItem("token", token);
-      setStatus({
-        kind: "success",
-        message: "로그인에 성공했습니다. 토큰이 저장되었습니다."
-      });
+      setAuthToken(token);
+      onLoginSuccess();
     } catch (error) {
-      let message = "로그인에 실패했습니다.";
+      let message: string = m.errors.loginFailed;
 
       if (axios.isAxiosError(error)) {
         message =
@@ -70,22 +74,7 @@ export default function ManagerLoginPage({
       }}
     >
       <div style={{ width: "100%", maxWidth: 420 }}>
-        <button
-          type="button"
-          onClick={onGoToMap}
-          style={{
-            marginBottom: 20,
-            padding: "8px 14px",
-            borderRadius: 10,
-            border: "1px solid #d1d5db",
-            background: "#ffffff",
-            color: "#374151",
-            cursor: "pointer",
-            fontSize: 14
-          }}
-        >
-          ← 지도로 이동
-        </button>
+        <AuthPageHeader backLabel={m.backToMap} onBack={onGoToMap} />
 
         <h1
           style={{
@@ -96,21 +85,11 @@ export default function ManagerLoginPage({
             color: "#1f2937"
           }}
         >
-          Manager Log-In
+          {m.loginTitle}
         </h1>
 
         <form onSubmit={handleLogin}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: 8,
-              fontSize: 15,
-              fontWeight: 600,
-              color: "#111827"
-            }}
-          >
-            Manager ID
-          </label>
+          <label style={labelStyle}>{m.managerId}</label>
           <input
             type="text"
             value={username}
@@ -120,22 +99,12 @@ export default function ManagerLoginPage({
             style={inputStyle}
           />
 
-          <label
-            style={{
-              display: "block",
-              margin: "18px 0 8px",
-              fontSize: 15,
-              fontWeight: 600,
-              color: "#111827"
-            }}
-          >
-            Manager Password
-          </label>
+          <label style={{ ...labelStyle, marginTop: 18 }}>{m.managerPassword}</label>
           <input
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            placeholder="Password"
+            placeholder={m.passwordPlaceholder}
             autoComplete="current-password"
             style={inputStyle}
           />
@@ -157,7 +126,7 @@ export default function ManagerLoginPage({
                 opacity: status.kind === "loading" ? 0.7 : 1
               }}
             >
-              {status.kind === "loading" ? "로그인 중..." : "Log-In"}
+              {status.kind === "loading" ? m.loggingIn : m.login}
             </button>
             <button
               type="button"
@@ -167,7 +136,7 @@ export default function ManagerLoginPage({
                 background: "#374151"
               }}
             >
-              Register
+              {m.register}
             </button>
           </div>
 
@@ -181,7 +150,7 @@ export default function ManagerLoginPage({
               background: "#ef4444"
             }}
           >
-            Forgot Password?
+            {m.forgotPassword}
           </button>
         </form>
 
@@ -199,7 +168,7 @@ export default function ManagerLoginPage({
             }}
           >
             <strong>
-              {status.kind === "success" ? "성공" : "실패"}
+              {status.kind === "success" ? ui.common.success : ui.common.failure}
             </strong>
             <div style={{ marginTop: 4 }}>{status.message}</div>
           </div>
@@ -208,6 +177,14 @@ export default function ManagerLoginPage({
     </div>
   );
 }
+
+const labelStyle: CSSProperties = {
+  display: "block",
+  marginBottom: 8,
+  fontSize: 15,
+  fontWeight: 600,
+  color: "#111827"
+};
 
 const inputStyle: CSSProperties = {
   width: "100%",

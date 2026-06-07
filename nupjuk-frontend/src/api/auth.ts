@@ -1,6 +1,7 @@
 import axios from "axios";
 import type {
   ForgotPasswordRequestBody,
+  ForgotPasswordResponse,
   LoginResponse,
   MessageResponse,
   RegisterRequestBody
@@ -33,8 +34,8 @@ export async function registerRequest(
 
 export async function forgotPasswordRequest(
   body: ForgotPasswordRequestBody
-): Promise<MessageResponse> {
-  const response = await axios.post<MessageResponse>(
+): Promise<ForgotPasswordResponse> {
+  const response = await axios.post<ForgotPasswordResponse>(
     `${API_BASE_URL}/auth/forgot-password-request`,
     body
   );

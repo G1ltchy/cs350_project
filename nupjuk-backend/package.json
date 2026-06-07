@@ -4,11 +4,15 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "seed:admin": "ts-node-dev --transpile-only src/scripts/seedAdmin.ts",
+    "seed:markers": "ts-node-dev --transpile-only src/scripts/seedMarkers.ts",
+    "seed": "npm run seed:admin && npm run seed:markers"
   },
   "dependencies": {
     "@types/multer": "^2.1.0",
     "@types/node-cron": "^3.0.11",
+    "@types/nodemailer": "^8.0.0",
     "@types/sanitize-html": "^2.16.1",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
@@ -18,6 +22,7 @@
     "mongoose": "^8.4.0",
     "multer": "^2.1.1",
     "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.10",
     "sanitize-html": "^2.17.4",
     "zod": "^3.23.8"
   },

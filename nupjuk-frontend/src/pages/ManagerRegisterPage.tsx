@@ -1,9 +1,11 @@
 import axios from "axios";
 import { FormEvent, useState } from "react";
 import { registerRequest } from "../api/auth";
+import AuthPageHeader from "../components/AuthPageHeader";
+import { useLanguage } from "../context/LanguageContext";
+import { getUi } from "../i18n/ui";
 import {
   authActionButtonStyle,
-  authBackButtonStyle,
   authContainerStyle,
   authInputStyle,
   authLabelStyle,
@@ -26,6 +28,10 @@ type FormStatus =
 export default function ManagerRegisterPage({
   onGoToLogin
 }: ManagerRegisterPageProps) {
+  const { language } = useLanguage();
+  const ui = getUi(language);
+  const m = ui.manager;
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,26 +45,17 @@ export default function ManagerRegisterPage({
     const trimmedEmail = email.trim();
 
     if (!trimmedUsername || !trimmedEmail || !password) {
-      setStatus({
-        kind: "error",
-        message: "Manager ID, Email, Password를 모두 입력해 주세요."
-      });
+      setStatus({ kind: "error", message: m.errors.registerFields });
       return;
     }
 
     if (password.length < 8) {
-      setStatus({
-        kind: "error",
-        message: "Password는 8자 이상이어야 합니다."
-      });
+      setStatus({ kind: "error", message: m.errors.registerPassword });
       return;
     }
 
     if (!trimmedEmail.endsWith("@kaist.ac.kr")) {
-      setStatus({
-        kind: "error",
-        message: "KAIST 이메일(@kaist.ac.kr)만 가입할 수 있습니다."
-      });
+      setStatus({ kind: "error", message: m.errors.registerEmail });
       return;
     }
 
@@ -79,7 +76,7 @@ export default function ManagerRegisterPage({
       setPassword("");
       setMessage("");
     } catch (error) {
-      let messageText = "가입 요청에 실패했습니다.";
+      let messageText: string = m.errors.registerFailed;
 
       if (axios.isAxiosError(error)) {
         const data = error.response?.data as
@@ -95,18 +92,12 @@ export default function ManagerRegisterPage({
   return (
     <div style={authPageStyle}>
       <div style={authContainerStyle}>
-        <button
-          type="button"
-          onClick={onGoToLogin}
-          style={authBackButtonStyle}
-        >
-          ← Log-In으로 돌아가기
-        </button>
+        <AuthPageHeader backLabel={m.backToLogin} onBack={onGoToLogin} />
 
-        <h1 style={authTitleStyle}>Manager Register</h1>
+        <h1 style={authTitleStyle}>{m.registerTitle}</h1>
 
         <form onSubmit={handleSubmit}>
-          <label style={authLabelStyle}>Manager ID</label>
+          <label style={authLabelStyle}>{m.managerId}</label>
           <input
             type="text"
             value={username}
@@ -116,7 +107,7 @@ export default function ManagerRegisterPage({
             style={authInputStyle}
           />
 
-          <label style={{ ...authLabelStyle, marginTop: 18 }}>KAIST Email</label>
+          <label style={{ ...authLabelStyle, marginTop: 18 }}>{m.kaistEmail}</label>
           <input
             type="email"
             value={email}
@@ -126,7 +117,7 @@ export default function ManagerRegisterPage({
             style={authInputStyle}
           />
 
-          <label style={{ ...authLabelStyle, marginTop: 18 }}>Password</label>
+          <label style={{ ...authLabelStyle, marginTop: 18 }}>{m.password}</label>
           <input
             type="password"
             value={password}
@@ -137,12 +128,12 @@ export default function ManagerRegisterPage({
           />
 
           <label style={{ ...authLabelStyle, marginTop: 18 }}>
-            Message (optional)
+            {m.messageOptional}
           </label>
           <textarea
             value={message}
             onChange={(event) => setMessage(event.target.value)}
-            placeholder="관리자에게 전달할 메모"
+            placeholder={m.messageOptionalPlaceholder}
             style={authTextareaStyle}
           />
 
@@ -163,7 +154,7 @@ export default function ManagerRegisterPage({
                 opacity: status.kind === "loading" ? 0.7 : 1
               }}
             >
-              {status.kind === "loading" ? "요청 중..." : "Register"}
+              {status.kind === "loading" ? m.requesting : m.register}
             </button>
             <button
               type="button"
@@ -173,7 +164,7 @@ export default function ManagerRegisterPage({
                 background: "#374151"
               }}
             >
-              Log-In
+              {m.login}
             </button>
           </div>
         </form>
@@ -185,7 +176,9 @@ export default function ManagerRegisterPage({
               status.kind === "success" ? "success" : "error"
             )}
           >
-            <strong>{status.kind === "success" ? "성공" : "실패"}</strong>
+            <strong>
+              {status.kind === "success" ? ui.common.success : ui.common.failure}
+            </strong>
             <div style={{ marginTop: 4 }}>{status.message}</div>
           </div>
         )}
