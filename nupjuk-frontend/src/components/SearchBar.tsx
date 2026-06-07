@@ -1,14 +1,19 @@
 interface SearchBarProps {
-    value: string;
-    onChange: (value: string) => void;
-  }
-  
-  export default function SearchBar({ value, onChange }: SearchBarProps) {
-    return (
-      <input
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        placeholder="Search markers"
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}
+
+export default function SearchBar({
+  value,
+  onChange,
+  placeholder = "Search markers"
+}: SearchBarProps) {
+  return (
+    <input
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+      placeholder={placeholder}
         style={{
           width: "100%",
           padding: "12px 14px",

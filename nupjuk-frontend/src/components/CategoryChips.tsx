@@ -1,21 +1,20 @@
+import { useMemo } from "react";
+import { useLanguage } from "../context/LanguageContext";
+import { getUi } from "../i18n/ui";
 import type { MarkerCategory } from "../types/marker";
 
 type CategoryValue = MarkerCategory | "all";
 
-interface CategoryOption {
-  label: string;
-  value: CategoryValue;
-}
-
-const categoryOptions: CategoryOption[] = [
-  { label: "전체", value: "all" },
-  { label: "식당", value: "dining" },
-  { label: "버스", value: "bus" },
-  { label: "건물", value: "building" },
-  { label: "행사", value: "event" },
-  { label: "시설", value: "facility" },
-  { label: "카페", value: "cafe" },
-  { label: "도서관", value: "library" }
+const CATEGORY_CHIP_ORDER: CategoryValue[] = [
+  "all",
+  "dining",
+  "bus",
+  "building",
+  "event",
+  "facility",
+  "cafe",
+  "library",
+  "etc"
 ];
 
 interface CategoryChipsProps {
@@ -27,6 +26,21 @@ export default function CategoryChips({
   selected,
   onSelect
 }: CategoryChipsProps) {
+  const { language } = useLanguage();
+  const ui = getUi(language);
+
+  const categoryOptions = useMemo(
+    () =>
+      CATEGORY_CHIP_ORDER.map((value) => ({
+        value,
+        label:
+          value === "all"
+            ? ui.categories.all
+            : ui.categories[value as MarkerCategory]
+      })),
+    [language, ui.categories]
+  );
+
   return (
     <div
       style={{
@@ -43,6 +57,7 @@ export default function CategoryChips({
         return (
           <button
             key={option.value}
+            type="button"
             onClick={() => onSelect(option.value)}
             style={{
               padding: "8px 12px",
