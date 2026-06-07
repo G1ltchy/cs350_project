@@ -222,23 +222,37 @@ export default function UserMapPage({
   const [dynamicInfo, setDynamicInfo] = useState<DynamicInfoResponse | null>(
     null
   );
+
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<CategoryFilter>("all");
+
   const [isUsingMock, setIsUsingMock] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [managerView, setManagerView] = useState<ManagerView>("list");
-  const [viewingMarker, setViewingMarker] = useState<MarkerDetail | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const loadMarkers = useCallback(async () => {
-    try {
-      const data = await fetchMarkers();
+  useEffect(() => {
+    async function loadMarkers() {
+      setLoading(true);
+      setErrorMessage(null);
 
-      if (data.length === 0) {
+      try {
+        const data = await fetchMarkers();
+
+        if (data.length === 0) {
+          setMarkers(mockMarkers);
+          setIsUsingMock(true);
+          setErrorMessage("백엔드에 표시할 마커가 없어 mock data를 사용합니다.");
+        } else {
+          setMarkers(data);
+          setIsUsingMock(false);
+        }
+      } catch (error) {
+        console.error("Failed to load markers from backend:", error);
         setMarkers(mockMarkers);
         setIsUsingMock(true);
-      } else {
-        setMarkers(data);
-        setIsUsingMock(false);
+        setErrorMessage("백엔드 연결에 실패하여 mock data를 사용합니다.");
+      } finally {
+        setLoading(false);
       }
     } catch (error) {
       console.error("Failed to load markers from backend:", error);
@@ -290,91 +304,81 @@ export default function UserMapPage({
     }
   }
 
-  async function openMarkerDetail(marker: MarkerSummary) {
-    const markerId = getMarkerId(marker);
+  const openMarkerDetail = useCallback(
+    async (marker: MarkerSummary) => {
+      const markerId = getMarkerId(marker);
 
-    if (!markerId) {
-      return;
-    }
-
-    setDynamicInfo(null);
-
-    const detail = await loadMarkerDetail(marker);
-
-    if (!detail) {
-      return;
-    }
-
-    setSelectedMarker(detail);
-
-    if (isUsingMock) {
-      if (detail.dynamicType === "event") {
-        setDynamicInfo({
-          type: "event",
-          activeUntil: detail.activeUntil ?? null,
-          remainingSeconds: detail.activeUntil
-            ? Math.floor(
-                (new Date(detail.activeUntil).getTime() - Date.now()) / 1000
-              )
-            : null
-        });
-      } else if (detail.dynamicType === "dining") {
-        setDynamicInfo({
-          type: "dining",
-          externalUrl: detail.externalUrl ?? null
-        });
-      } else if (detail.dynamicType === "bus") {
-        setDynamicInfo({
-          type: "bus",
-          externalUrl: detail.externalUrl ?? null
-        });
-      } else {
-        setDynamicInfo({ type: "none" });
+      if (!markerId) {
+        return;
       }
 
-      return;
-    }
+      setDynamicInfo(null);
 
-    try {
-      if (detail.dynamicType && detail.dynamicType !== "none") {
-        const dynamic = await fetchMarkerDynamicInfo(markerId);
-        setDynamicInfo(dynamic);
-      } else {
-        setDynamicInfo({ type: "none" });
+      if (isUsingMock) {
+        const found = mockMarkers.find(
+          (item) => getMarkerId(item) === markerId
+        );
+
+        if (found) {
+          setSelectedMarker(found);
+
+          if (found.dynamicType === "event") {
+            setDynamicInfo({
+              type: "event",
+              activeUntil: found.activeUntil ?? null,
+              remainingSeconds: found.activeUntil
+                ? Math.floor(
+                    (new Date(found.activeUntil).getTime() - Date.now()) /
+                      1000
+                  )
+                : null
+            });
+          } else if (found.dynamicType === "dining") {
+            setDynamicInfo({
+              type: "dining",
+              externalUrl: found.externalUrl ?? null
+            });
+          } else if (found.dynamicType === "bus") {
+            setDynamicInfo({
+              type: "bus",
+              externalUrl: found.externalUrl ?? null
+            });
+          } else {
+            setDynamicInfo({ type: "none" });
+          }
+        } else {
+          setSelectedMarker({
+            ...marker,
+            markdownKo: "하위 장소에 대한 상세 정보입니다."
+          });
+          setDynamicInfo({ type: "none" });
+        }
+
+        return;
       }
-    } catch (error) {
-      console.error("Failed to load marker dynamic info:", error);
-      setDynamicInfo({ type: "none" });
-    }
-  }
 
-  async function openManagerMarkerView(marker: MarkerSummary) {
-    const markerId = getMarkerId(marker);
-
-    if (!markerId) {
-      return;
-    }
-
-    let detail: MarkerDetail | null = null;
-
-    if (isUsingMock) {
-      detail = await loadMarkerDetail(marker);
-    } else {
       try {
-        detail = await fetchAdminMarkerDetail(markerId);
+        const detail = await fetchMarkerDetail(markerId);
+        setSelectedMarker(detail);
+
+        if (detail.dynamicType && detail.dynamicType !== "none") {
+          const dynamic = await fetchMarkerDynamicInfo(markerId);
+          setDynamicInfo(dynamic);
+        } else {
+          setDynamicInfo({ type: "none" });
+        }
       } catch (error) {
-        console.error("Failed to load admin marker detail:", error);
-        detail = await loadMarkerDetail(marker);
+        console.error("Failed to load marker detail:", error);
+        setSelectedMarker({
+          ...marker,
+          markdownKo: "상세 정보를 불러오지 못했습니다."
+        });
+      } else {
+        setDynamicInfo({ type: "none" });
       }
-    }
-
-    if (!detail) {
-      return;
-    }
-
-    setViewingMarker(detail);
-    setManagerView("view");
-  }
+    },
+    [isUsingMock]
+  );
 
   const visibleMarkers = useMemo(() => {
     return markers.filter((marker) => {
@@ -392,137 +396,7 @@ export default function UserMapPage({
     });
   }, [markers, query, category]);
 
-  const selectedPublicMarkerId = selectedMarker
-    ? getMarkerId(selectedMarker)
-    : null;
-  const selectedManagerMarkerId = viewingMarker
-    ? getMarkerId(viewingMarker)
-    : null;
-
-  const mapView = (
-    <MapView
-      compact={isAuthenticated}
-      query={query}
-      onQueryChange={setQuery}
-      category={category}
-      onCategoryChange={setCategory}
-      isUsingMock={isUsingMock}
-      loading={loading}
-      visibleMarkers={visibleMarkers}
-      selectedMarkerId={selectedPublicMarkerId}
-      onOpenMarker={openMarkerDetail}
-      showUserControls={!isAuthenticated}
-      onGoToLogin={!isAuthenticated ? onGoToLogin : undefined}
-    />
-  );
-
-  const managerMapView = (
-    <MapView
-      compact
-      query={query}
-      onQueryChange={setQuery}
-      category={category}
-      onCategoryChange={setCategory}
-      isUsingMock={isUsingMock}
-      loading={loading}
-      visibleMarkers={visibleMarkers}
-      selectedMarkerId={selectedManagerMarkerId}
-      onOpenMarker={openManagerMarkerView}
-      showUserControls={false}
-      showCategoryControls
-    />
-  );
-
-  if (isAuthenticated) {
-    if (managerView === "create") {
-      return (
-        <CreateMarkerView
-          markers={markers}
-          onBack={() => setManagerView("list")}
-          onMarkerCreated={() => {
-            loadMarkers();
-            setManagerView("list");
-          }}
-        />
-      );
-    }
-
-    if (managerView === "view" && viewingMarker) {
-      return (
-        <ViewMarkerView
-          marker={viewingMarker}
-          markers={markers}
-          mapPanel={managerMapView}
-          onBack={() => {
-            setManagerView("list");
-            setViewingMarker(null);
-          }}
-          onEdit={() => setManagerView("edit")}
-          onDeleted={() => {
-            loadMarkers();
-            setManagerView("list");
-            setViewingMarker(null);
-          }}
-        />
-      );
-    }
-
-    if (managerView === "edit" && viewingMarker) {
-      return (
-        <EditMarkerView
-          marker={viewingMarker}
-          markers={markers}
-          onBack={() => setManagerView("view")}
-          onMarkerUpdated={async () => {
-            await loadMarkers();
-            const markerId = getMarkerId(viewingMarker);
-            let updated: MarkerDetail | null = null;
-
-            if (isUsingMock) {
-              updated = await loadMarkerDetail(viewingMarker);
-            } else if (markerId) {
-              try {
-                updated = await fetchAdminMarkerDetail(markerId);
-              } catch {
-                updated = await loadMarkerDetail(viewingMarker);
-              }
-            }
-
-            if (updated) {
-              setViewingMarker(updated);
-            }
-            setManagerView("view");
-          }}
-        />
-      );
-    }
-
-    return (
-      <div
-        style={{
-          width: "100vw",
-          height: "100vh",
-          display: "flex",
-          overflow: "hidden",
-          background: "#ffffff"
-        }}
-      >
-        <MarkerManagementPanel
-          markers={markers}
-          loading={loading}
-          categoryFilter={category}
-          onCategoryFilterChange={setCategory}
-          onSelectMarker={openManagerMarkerView}
-          onCreateNew={() => setManagerView("create")}
-          onLogout={onLogout}
-        />
-
-        <div style={{ flex: 1, minWidth: 0, height: "100%" }}>
-          {managerMapView}
-        </div>
-      </div>
-    );
-  }
+  const selectedMarkerId = selectedMarker ? getMarkerId(selectedMarker) : null;
 
   return (
     <div
@@ -530,10 +404,147 @@ export default function UserMapPage({
         width: "100vw",
         height: "100vh",
         position: "relative",
-        overflow: "hidden"
+        overflow: "hidden",
+        background: "#e5e7eb"
       }}
     >
-      {mapView}
+      <div
+        style={{
+          position: "absolute",
+          top: 16,
+          left: 16,
+          right: 16,
+          zIndex: 10
+        }}
+      >
+        <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <SearchBar value={query} onChange={setQuery} />
+          </div>
+
+          {onGoToLogin && (
+            <button
+              type="button"
+              onClick={onGoToLogin}
+              style={{
+                flexShrink: 0,
+                marginTop: 2,
+                padding: "10px 14px",
+                borderRadius: 12,
+                border: "none",
+                background: "#374151",
+                color: "#ffffff",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.12)"
+              }}
+            >
+              Manager Login
+            </button>
+          )}
+        </div>
+
+        <CategoryChips selected={category} onSelect={setCategory} />
+
+        <div
+          style={{
+            marginTop: 8,
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            flexWrap: "wrap"
+          }}
+        >
+          <div
+            style={{
+              padding: "7px 10px",
+              borderRadius: 999,
+              background: "#ffffff",
+              color: "#374151",
+              fontSize: 12,
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)"
+            }}
+          >
+            표시 중: {visibleMarkers.length}개
+          </div>
+
+          {loading && (
+            <div
+              style={{
+                padding: "7px 10px",
+                borderRadius: 999,
+                background: "#eff6ff",
+                color: "#1d4ed8",
+                fontSize: 12,
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)"
+              }}
+            >
+              마커 로딩 중...
+            </div>
+          )}
+
+          {isUsingMock && (
+            <div
+              style={{
+                padding: "7px 10px",
+                borderRadius: 999,
+                background: "#fff7ed",
+                color: "#9a3412",
+                fontSize: 12,
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)"
+              }}
+            >
+              Mock data 사용 중
+            </div>
+          )}
+        </div>
+
+        {errorMessage && (
+          <div
+            style={{
+              marginTop: 8,
+              padding: 10,
+              borderRadius: 12,
+              background: "#ffffff",
+              color: "#92400e",
+              fontSize: 12,
+              lineHeight: 1.4,
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)"
+            }}
+          >
+            {errorMessage}
+          </div>
+        )}
+      </div>
+
+      <main style={{ width: "100%", height: "100%" }}>
+        <KakaoMapView
+          markers={visibleMarkers}
+          selectedMarkerId={selectedMarkerId}
+          onMarkerClick={openMarkerDetail}
+        />
+
+        {!loading && visibleMarkers.length === 0 && (
+          <div
+            style={{
+              position: "absolute",
+              left: 24,
+              right: 24,
+              top: "45%",
+              zIndex: 8,
+              padding: 18,
+              borderRadius: 18,
+              background: "#ffffff",
+              color: "#374151",
+              textAlign: "center",
+              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.16)"
+            }}
+          >
+            검색 결과가 없습니다.
+          </div>
+        )}
+      </main>
 
       {selectedMarker && (
         <BottomSheet onClose={() => setSelectedMarker(null)}>
