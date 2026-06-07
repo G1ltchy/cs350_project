@@ -151,8 +151,7 @@ export default function UserMapPage({ onGoToLogin }: UserMapPageProps) {
       const matchesQuery =
         trimmedQuery === "" ||
         marker.titleKo.toLowerCase().includes(trimmedQuery) ||
-        marker.titleEn?.toLowerCase().includes(trimmedQuery)
-        ;
+        marker.titleEn?.toLowerCase().includes(trimmedQuery);
 
       const matchesCategory =
         category === "all" || marker.category === category;
