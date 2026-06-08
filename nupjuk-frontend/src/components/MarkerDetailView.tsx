@@ -1,23 +1,87 @@
-import ReactMarkdown from "react-markdown";
-import { useLanguage } from "../context/LanguageContext";
-import { getUi } from "../i18n/ui";
-import {
-  getMarkerId,
-  getMarkerMarkdown,
-  getMarkerSubtitle,
-  getMarkerTitle,
-  getParentTitle
-} from "../lib/markerDisplay";
 import type {
   DynamicInfoResponse,
   MarkerDetail,
   MarkerSummary
 } from "../types/marker";
+import { getMarkerId } from "../types/marker";
 
 interface MarkerDetailViewProps {
   marker: MarkerDetail;
   dynamicInfo: DynamicInfoResponse | null;
-  onChildClick: (child: MarkerSummary) => void;
+  onChildClick: (marker: MarkerSummary) => void;
+}
+
+function formatCategory(category: string): string {
+  const labels: Record<string, string> = {
+    building: "건물",
+    dining: "식당",
+    cafe: "카페",
+    bus: "버스",
+    facility: "시설",
+    library: "도서관",
+    etc: "기타",
+    event: "행사"
+  };
+
+  return labels[category] ?? category;
+}
+
+function formatRemainingTime(seconds: number | null): string {
+  if (seconds === null) {
+    return "종료 시간이 등록되지 않았습니다.";
+  }
+
+  if (seconds <= 0) {
+    return "이미 종료된 이벤트입니다.";
+  }
+
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+
+  if (days > 0) {
+    return `${days}일 ${hours}시간 남음`;
+  }
+
+  if (hours > 0) {
+    return `${hours}시간 ${minutes}분 남음`;
+  }
+
+  return `${minutes}분 남음`;
+}
+
+function openNavigation(marker: MarkerDetail) {
+  const url = `https://map.kakao.com/link/to/${encodeURIComponent(
+    marker.titleKo
+  )},${marker.latitude},${marker.longitude}`;
+
+  window.open(url, "_blank");
+}
+
+function renderMarkdownLikeText(text?: string | null) {
+  if (!text) {
+    return <p className="marker-description">상세 설명이 없습니다.</p>;
+  }
+
+  const lines = text.split("\n").filter((line) => line.trim().length > 0);
+
+  return (
+    <div className="marker-description">
+      {lines.map((line, index) => {
+        const trimmed = line.trim();
+
+        if (trimmed.startsWith("- ")) {
+          return <li key={`${trimmed}-${index}`}>{trimmed.replace("- ", "")}</li>;
+        }
+
+        if (trimmed.startsWith("• ")) {
+          return <li key={`${trimmed}-${index}`}>{trimmed.replace("• ", "")}</li>;
+        }
+
+        return <p key={`${trimmed}-${index}`}>{trimmed}</p>;
+      })}
+    </div>
+  );
 }
 
 export default function MarkerDetailView({
@@ -25,211 +89,90 @@ export default function MarkerDetailView({
   dynamicInfo,
   onChildClick
 }: MarkerDetailViewProps) {
-  const { language } = useLanguage();
-  const ui = getUi(language);
-
-  const title = getMarkerTitle(marker, language);
-  const subtitle = getMarkerSubtitle(marker, language);
-  const markdownText = getMarkerMarkdown(marker, language, ui.map.noDescription);
-  const parentTitle = getParentTitle(marker.parentId, language);
-
-  function formatRemainingTime(seconds: number | null): string {
-    if (seconds === null) {
-      return ui.map.eventRemainingUnknown;
-    }
-
-    if (seconds <= 0) {
-      return ui.map.eventEnded;
-    }
-
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-
-    if (hours > 0) {
-      return ui.map.eventRemainingHours(hours, minutes);
-    }
-
-    return ui.map.eventRemainingMinutes(minutes);
-  }
-
-  function openNavigation() {
-    const url = `https://map.kakao.com/link/to/${encodeURIComponent(
-      title
-    )},${marker.latitude},${marker.longitude}`;
-
-    window.open(url, "_blank");
-  }
-
-  function openExternalUrl(url: string | null | undefined) {
-    if (!url) {
-      return;
-    }
-
-    window.open(url, "_blank");
-  }
-
   return (
-    <div>
-      {marker.imageUrl && (
-        <img
-          src={marker.imageUrl}
-          alt={title}
-          style={{
-            width: "100%",
-            maxHeight: 180,
-            objectFit: "cover",
-            borderRadius: 16,
-            marginTop: 16
-          }}
-        />
-      )}
+    <article className="marker-detail">
+      <header className="marker-detail-header">
+        <div>
+          <h2 className="marker-title">{marker.titleKo}</h2>
 
-      <h2 style={{ marginBottom: 4 }}>{title}</h2>
+          {marker.titleEn && <p className="marker-title-en">{marker.titleEn}</p>}
 
-      {subtitle && (
-        <p style={{ color: "#6b7280", marginTop: 0 }}>{subtitle}</p>
-      )}
+          <span className="marker-category">
+            {formatCategory(marker.category)}
+          </span>
+        </div>
+      </header>
 
-      {parentTitle && (
-        <p style={{ color: "#6b7280", marginTop: 0 }}>
-          {ui.map.parent}: {parentTitle}
-        </p>
-      )}
-
-      <div
-        style={{
-          display: "inline-block",
-          padding: "4px 10px",
-          borderRadius: 999,
-          background: "#eef2ff",
-          color: "#3730a3",
-          fontSize: 13,
-          marginBottom: 12
-        }}
-      >
-        {marker.category}
-      </div>
-
-      <div style={{ lineHeight: 1.6 }}>
-        <ReactMarkdown>{markdownText}</ReactMarkdown>
-      </div>
-
-      {dynamicInfo?.type === "dining" && (
-        <section
-          style={{
-            marginTop: 16,
-            padding: 14,
-            borderRadius: 14,
-            background: "#f9fafb"
-          }}
-        >
-          <h3 style={{ marginTop: 0 }}>{ui.map.diningInfo}</h3>
-          <p style={{ color: "#4b5563" }}>{ui.map.diningHint}</p>
-          {dynamicInfo.externalUrl && (
-            <button
-              onClick={() => openExternalUrl(dynamicInfo.externalUrl)}
-              style={{
-                padding: "10px 12px",
-                borderRadius: 12,
-                border: "1px solid #d1d5db",
-                background: "#ffffff",
-                cursor: "pointer"
-              }}
-            >
-              {ui.map.viewExternal}
-            </button>
-          )}
-        </section>
-      )}
-
-      {dynamicInfo?.type === "bus" && (
-        <section
-          style={{
-            marginTop: 16,
-            padding: 14,
-            borderRadius: 14,
-            background: "#f9fafb"
-          }}
-        >
-          <h3 style={{ marginTop: 0 }}>{ui.map.busInfo}</h3>
-          <p style={{ color: "#4b5563" }}>{ui.map.busHint}</p>
-          {dynamicInfo.externalUrl && (
-            <button
-              onClick={() => openExternalUrl(dynamicInfo.externalUrl)}
-              style={{
-                padding: "10px 12px",
-                borderRadius: 12,
-                border: "1px solid #d1d5db",
-                background: "#ffffff",
-                cursor: "pointer"
-              }}
-            >
-              {ui.map.viewExternal}
-            </button>
-          )}
-        </section>
-      )}
+      <section className="marker-description-section">
+        {renderMarkdownLikeText(marker.markdownKo)}
+      </section>
 
       {dynamicInfo?.type === "event" && (
-        <section
-          style={{
-            marginTop: 16,
-            padding: 14,
-            borderRadius: 14,
-            background: "#f9fafb"
-          }}
-        >
-          <h3 style={{ marginTop: 0 }}>{ui.map.eventInfo}</h3>
+        <section className="marker-dynamic-card">
+          <h3>이벤트 정보</h3>
           <p>{formatRemainingTime(dynamicInfo.remainingSeconds)}</p>
         </section>
       )}
 
-      {marker.children && marker.children.length > 0 && (
-        <section style={{ marginTop: 16 }}>
-          <h3>{ui.map.childPlaces}</h3>
-          {marker.children.map((child) => {
-            const childId = getMarkerId(child);
+      {dynamicInfo?.type === "dining" && dynamicInfo.externalUrl && (
+        <section className="marker-dynamic-card">
+          <h3>식당 정보</h3>
+          <a
+            href={dynamicInfo.externalUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="marker-external-link"
+          >
+            식당 정보 보기
+          </a>
+        </section>
+      )}
 
-            return (
-              <button
-                key={childId}
-                onClick={() => onChildClick(child)}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  marginTop: 8,
-                  padding: 12,
-                  borderRadius: 12,
-                  border: "1px solid #d1d5db",
-                  background: "#ffffff",
-                  textAlign: "left",
-                  cursor: "pointer"
-                }}
-              >
-                {getMarkerTitle(child, language)}
-              </button>
-            );
-          })}
+      {dynamicInfo?.type === "bus" && dynamicInfo.externalUrl && (
+        <section className="marker-dynamic-card">
+          <h3>버스 정보</h3>
+          <a
+            href={dynamicInfo.externalUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="marker-external-link"
+          >
+            버스 정보 보기
+          </a>
+        </section>
+      )}
+
+      {marker.children && marker.children.length > 0 && (
+        <section className="marker-children-section">
+          <h3>하위 장소</h3>
+
+          <div className="marker-child-list">
+            {marker.children.map((child) => {
+              const childId = getMarkerId(child);
+
+              return (
+                <button
+                  key={childId}
+                  type="button"
+                  onClick={() => onChildClick(child)}
+                  className="marker-child-button"
+                >
+                  <span>{child.titleKo}</span>
+                  {child.titleEn && <small>{child.titleEn}</small>}
+                </button>
+              );
+            })}
+          </div>
         </section>
       )}
 
       <button
-        onClick={openNavigation}
-        style={{
-          width: "100%",
-          marginTop: 20,
-          padding: 14,
-          borderRadius: 14,
-          border: "none",
-          background: "#2563eb",
-          color: "#ffffff",
-          fontSize: 16,
-          fontWeight: 700,
-          cursor: "pointer"
-        }}
+        type="button"
+        onClick={() => openNavigation(marker)}
+        className="marker-navigation-button"
       >
-        {ui.map.directions}
+        길찾기
       </button>
-    </div>
+    </article>
   );
 }

@@ -1,76 +1,101 @@
-import { useMemo } from "react";
-import { useLanguage } from "../context/LanguageContext";
-import { getUi } from "../i18n/ui";
+import { useRef, useState } from "react";
 import type { MarkerCategory } from "../types/marker";
 
-type CategoryValue = MarkerCategory | "all";
-
-const CATEGORY_CHIP_ORDER: CategoryValue[] = [
-  "all",
-  "dining",
-  "bus",
-  "building",
-  "event",
-  "facility",
-  "cafe",
-  "library",
-  "etc"
-];
+type CategoryFilter = MarkerCategory | "all";
 
 interface CategoryChipsProps {
-  selected: CategoryValue;
-  onSelect: (category: CategoryValue) => void;
+  selected: CategoryFilter;
+  onSelect: (category: CategoryFilter) => void;
 }
+
+const categories: { label: string; value: CategoryFilter }[] = [
+  { label: "전체", value: "all" },
+  { label: "건물", value: "building" },
+  { label: "식당", value: "dining" },
+  { label: "카페", value: "cafe" },
+  { label: "버스", value: "bus" },
+  { label: "시설", value: "facility" },
+  { label: "도서관", value: "library" },
+  { label: "기타", value: "etc" }
+];
 
 export default function CategoryChips({
   selected,
   onSelect
 }: CategoryChipsProps) {
-  const { language } = useLanguage();
-  const ui = getUi(language);
+  const rowRef = useRef<HTMLDivElement | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartX = useRef(0);
+  const scrollStartX = useRef(0);
+  const didDrag = useRef(false);
 
-  const categoryOptions = useMemo(
-    () =>
-      CATEGORY_CHIP_ORDER.map((value) => ({
-        value,
-        label:
-          value === "all"
-            ? ui.categories.all
-            : ui.categories[value as MarkerCategory]
-      })),
-    [language, ui.categories]
-  );
+  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+    if (!rowRef.current) return;
+
+    setIsDragging(true);
+    didDrag.current = false;
+    dragStartX.current = event.pageX;
+    scrollStartX.current = rowRef.current.scrollLeft;
+  }
+
+  function handleMouseMove(event: React.MouseEvent<HTMLDivElement>) {
+    if (!isDragging || !rowRef.current) return;
+
+    const deltaX = event.pageX - dragStartX.current;
+
+    if (Math.abs(deltaX) > 4) {
+      didDrag.current = true;
+    }
+
+    rowRef.current.scrollLeft = scrollStartX.current - deltaX;
+  }
+
+  function stopDragging() {
+    setIsDragging(false);
+  }
+
+  function handleWheel(event: React.WheelEvent<HTMLDivElement>) {
+    if (!rowRef.current) return;
+
+    event.preventDefault();
+
+    if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+      rowRef.current.scrollLeft += event.deltaY;
+    } else {
+      rowRef.current.scrollLeft += event.deltaX;
+    }
+  }
+
+  function handleCategoryClick(category: CategoryFilter) {
+    if (didDrag.current) {
+      didDrag.current = false;
+      return;
+    }
+
+    onSelect(category);
+  }
 
   return (
     <div
-      style={{
-        display: "flex",
-        gap: 8,
-        marginTop: 8,
-        overflowX: "auto",
-        paddingBottom: 4
-      }}
+      ref={rowRef}
+      className={`category-chip-row ${isDragging ? "dragging" : ""}`}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={stopDragging}
+      onMouseLeave={stopDragging}
+      onWheel={handleWheel}
     >
-      {categoryOptions.map((option) => {
-        const isSelected = selected === option.value;
+      {categories.map((category) => {
+        const isSelected = selected === category.value;
 
         return (
           <button
-            key={option.value}
+            key={category.value}
             type="button"
-            onClick={() => onSelect(option.value)}
-            style={{
-              padding: "8px 12px",
-              borderRadius: 999,
-              border: "1px solid #d1d5db",
-              background: isSelected ? "#111827" : "#ffffff",
-              color: isSelected ? "#ffffff" : "#111827",
-              whiteSpace: "nowrap",
-              cursor: "pointer",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)"
-            }}
+            onClick={() => handleCategoryClick(category.value)}
+            className={`category-chip ${isSelected ? "selected" : ""}`}
           >
-            {option.label}
+            {category.label}
           </button>
         );
       })}
