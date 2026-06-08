@@ -56,20 +56,35 @@ function getSafeMarkerId(marker: MarkerSummary): string {
   return marker.id ?? marker._id ?? `${marker.latitude}-${marker.longitude}`;
 }
 
-function makeMarkerContent(marker: MarkerSummary): string {
+function makeOverlayContent(marker: MarkerSummary): string {
   return `
     <div style="
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: white;
+      position: relative;
+      transform: translateY(-8px);
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: #ffffff;
       border: 1px solid #d1d5db;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.14);
-      font-size: 13px;
-      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
       color: #111827;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.3;
       white-space: nowrap;
+      pointer-events: none;
     ">
       ${marker.titleKo}
+      <div style="
+        position: absolute;
+        left: 50%;
+        bottom: -7px;
+        width: 12px;
+        height: 12px;
+        background: #ffffff;
+        border-right: 1px solid #d1d5db;
+        border-bottom: 1px solid #d1d5db;
+        transform: translateX(-50%) rotate(45deg);
+      "></div>
     </div>
   `;
 }
@@ -82,7 +97,7 @@ export default function KakaoMapView({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<KakaoMap | null>(null);
   const markerRefs = useRef<KakaoMarker[]>([]);
-  const infoWindowRef = useRef<KakaoInfoWindow | null>(null);
+  const overlayRef = useRef<KakaoCustomOverlay | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -137,8 +152,8 @@ export default function KakaoMapView({
     markerRefs.current.forEach((marker) => marker.setMap(null));
     markerRefs.current = [];
 
-    infoWindowRef.current?.close();
-    infoWindowRef.current = null;
+    overlayRef.current?.setMap(null);
+    overlayRef.current = null;
 
     markers.forEach((marker) => {
       const position = new window.kakao.maps.LatLng(
@@ -153,14 +168,17 @@ export default function KakaoMapView({
       });
 
       window.kakao.maps.event.addListener(kakaoMarker, "click", () => {
-        infoWindowRef.current?.close();
+        overlayRef.current?.setMap(null);
 
-        const infoWindow = new window.kakao.maps.InfoWindow({
-          content: makeMarkerContent(marker)
+        const overlay = new window.kakao.maps.CustomOverlay({
+          position,
+          content: makeOverlayContent(marker),
+          yAnchor: 1.9,
+          zIndex: 30
         });
 
-        infoWindow.open(map, kakaoMarker);
-        infoWindowRef.current = infoWindow;
+        overlay.setMap(map);
+        overlayRef.current = overlay;
 
         onMarkerClick(marker);
       });
@@ -190,6 +208,18 @@ export default function KakaoMapView({
     );
 
     map.setCenter(center);
+
+    overlayRef.current?.setMap(null);
+
+    const overlay = new window.kakao.maps.CustomOverlay({
+      position: center,
+      content: makeOverlayContent(selected),
+      yAnchor: 1.9,
+      zIndex: 30
+    });
+
+    overlay.setMap(map);
+    overlayRef.current = overlay;
   }, [markers, selectedMarkerId]);
 
   return (
