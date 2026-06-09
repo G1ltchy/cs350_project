@@ -1,44 +1,57 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useLanguage } from "../context/LanguageContext";
+import { getUi } from "../i18n/ui";
 import type { MarkerCategory } from "../types/marker";
 
-type CategoryFilter = MarkerCategory | "all";
-type Language = "ko" | "en";
+type CategoryValue = MarkerCategory | "all";
+
+const CATEGORY_CHIP_ORDER: CategoryValue[] = [
+  "all",
+  "dining",
+  "bus",
+  "building",
+  "event",
+  "facility",
+  "cafe",
+  "library",
+  "etc"
+];
 
 interface CategoryChipsProps {
-  selected: CategoryFilter;
-  onSelect: (category: CategoryFilter) => void;
-  language?: Language;
+  selected: CategoryValue;
+  onSelect: (category: CategoryValue) => void;
+  mobileLayout?: boolean;
 }
-
-const categories: {
-  labelKo: string;
-  labelEn: string;
-  value: CategoryFilter;
-}[] = [
-  { labelKo: "전체", labelEn: "All", value: "all" },
-  { labelKo: "건물", labelEn: "Buildings", value: "building" },
-  { labelKo: "식당", labelEn: "Dining", value: "dining" },
-  { labelKo: "카페", labelEn: "Cafe", value: "cafe" },
-  { labelKo: "버스", labelEn: "Bus", value: "bus" },
-  { labelKo: "시설", labelEn: "Facilities", value: "facility" },
-  { labelKo: "도서관", labelEn: "Library", value: "library" },
-  { labelKo: "기타", labelEn: "Other", value: "etc" }
-];
 
 export default function CategoryChips({
   selected,
   onSelect,
-  language = "ko"
+  mobileLayout = false
 }: CategoryChipsProps) {
+  const { language } = useLanguage();
+  const ui = getUi(language);
   const rowRef = useRef<HTMLDivElement | null>(null);
-
   const [isDragging, setIsDragging] = useState(false);
   const startXRef = useRef(0);
   const startScrollLeftRef = useRef(0);
   const movedRef = useRef(false);
 
+  const categoryOptions = useMemo(
+    () =>
+      CATEGORY_CHIP_ORDER.map((value) => ({
+        value,
+        label:
+          value === "all"
+            ? ui.categories.all
+            : ui.categories[value as MarkerCategory]
+      })),
+    [language, ui.categories]
+  );
+
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    if (!rowRef.current) return;
+    if (!mobileLayout || !rowRef.current) {
+      return;
+    }
 
     setIsDragging(true);
     movedRef.current = false;
@@ -47,7 +60,9 @@ export default function CategoryChips({
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    if (!isDragging || !rowRef.current) return;
+    if (!mobileLayout || !isDragging || !rowRef.current) {
+      return;
+    }
 
     const deltaX = event.clientX - startXRef.current;
 
@@ -63,7 +78,9 @@ export default function CategoryChips({
   }
 
   function handleWheel(event: React.WheelEvent<HTMLDivElement>) {
-    if (!rowRef.current) return;
+    if (!mobileLayout || !rowRef.current) {
+      return;
+    }
 
     const amount =
       Math.abs(event.deltaY) > Math.abs(event.deltaX)
@@ -73,7 +90,7 @@ export default function CategoryChips({
     rowRef.current.scrollLeft += amount;
   }
 
-  function handleChipPointerUp(category: CategoryFilter) {
+  function handleChipPointerUp(category: CategoryValue) {
     if (movedRef.current) {
       movedRef.current = false;
       return;
@@ -82,29 +99,66 @@ export default function CategoryChips({
     onSelect(category);
   }
 
+  if (mobileLayout) {
+    return (
+      <div
+        ref={rowRef}
+        className={`category-chip-row ${isDragging ? "dragging" : ""}`}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={stopDragging}
+        onPointerCancel={stopDragging}
+        onPointerLeave={stopDragging}
+        onWheel={handleWheel}
+      >
+        {categoryOptions.map((option) => {
+          const isSelected = selected === option.value;
+
+          return (
+            <button
+              key={option.value}
+              type="button"
+              className={`category-chip ${isSelected ? "selected" : ""}`}
+              onPointerUp={() => handleChipPointerUp(option.value)}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
     <div
-      ref={rowRef}
-      className={`category-chip-row ${isDragging ? "dragging" : ""}`}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={stopDragging}
-      onPointerCancel={stopDragging}
-      onPointerLeave={stopDragging}
-      onWheel={handleWheel}
+      style={{
+        display: "flex",
+        gap: 8,
+        marginTop: 8,
+        overflowX: "auto",
+        paddingBottom: 4
+      }}
     >
-      {categories.map((category) => {
-        const isSelected = selected === category.value;
-        const label = language === "ko" ? category.labelKo : category.labelEn;
+      {categoryOptions.map((option) => {
+        const isSelected = selected === option.value;
 
         return (
           <button
-            key={category.value}
+            key={option.value}
             type="button"
-            className={`category-chip ${isSelected ? "selected" : ""}`}
-            onPointerUp={() => handleChipPointerUp(category.value)}
+            onClick={() => onSelect(option.value)}
+            style={{
+              padding: "8px 12px",
+              borderRadius: 999,
+              border: "1px solid #d1d5db",
+              background: isSelected ? "#111827" : "#ffffff",
+              color: isSelected ? "#ffffff" : "#111827",
+              whiteSpace: "nowrap",
+              cursor: "pointer",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)"
+            }}
           >
-            {label}
+            {option.label}
           </button>
         );
       })}

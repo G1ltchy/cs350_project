@@ -1,16 +1,30 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import { useLanguage } from "../context/LanguageContext";
+import { getUi } from "../i18n/ui";
+import { getMarkerTitle } from "../lib/markerDisplay";
 import type { MarkerSummary } from "../types/marker";
+import { getMarkerId } from "../types/marker";
 
 interface CurrentLocation {
   latitude: number;
   longitude: number;
 }
 
+type MapLocation = {
+  latitude: number;
+  longitude: number;
+};
+
 interface KakaoMapViewProps {
   markers: MarkerSummary[];
   selectedMarkerId?: string | null;
   currentLocation?: CurrentLocation | null;
-  onMarkerClick: (marker: MarkerSummary) => void;
+  onMarkerClick?: (marker: MarkerSummary) => void;
+  pickMode?: boolean;
+  onLocationPick?: (latitude: number, longitude: number) => void;
+  pickedLocation?: MapLocation | null;
+  defaultCenter?: MapLocation;
+  showPickHint?: boolean;
 }
 
 const KAIST_CENTER = {
@@ -22,6 +36,32 @@ const CHILD_MARKER_VISIBLE_LEVEL = 2;
 
 let kakaoMapScriptPromise: Promise<void> | null = null;
 
+function isKakaoMapsApiReady(): boolean {
+  return typeof window.kakao?.maps?.LatLng === "function";
+}
+
+function waitForKakaoMapsApi(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (!window.kakao?.maps?.load) {
+      reject(new Error("Kakao Map SDK가 아직 초기화되지 않았습니다."));
+      return;
+    }
+
+    window.kakao.maps.load(() => {
+      if (!isKakaoMapsApiReady()) {
+        reject(
+          new Error(
+            "Kakao Map SDK 인증 실패: JavaScript 키와 도메인 등록을 확인하세요."
+          )
+        );
+        return;
+      }
+
+      resolve();
+    });
+  });
+}
+
 function loadKakaoMapScript(): Promise<void> {
   const appKey = import.meta.env.VITE_KAKAO_MAP_APP_KEY;
 
@@ -31,61 +71,56 @@ function loadKakaoMapScript(): Promise<void> {
     );
   }
 
-  if (window.kakao?.maps?.LatLng) {
-    return Promise.resolve();
-  }
-
-  if (window.kakao?.maps) {
-    return new Promise((resolve) => {
-      window.kakao!.maps.load(resolve);
-    });
-  }
-
   if (kakaoMapScriptPromise) {
     return kakaoMapScriptPromise;
   }
 
-  kakaoMapScriptPromise = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&autoload=false`;
+  kakaoMapScriptPromise = (async () => {
+    if (!window.kakao?.maps) {
+      await new Promise<void>((resolve, reject) => {
+        const existingScript = document.querySelector<HTMLScriptElement>(
+          'script[src*="dapi.kakao.com/v2/maps/sdk.js"]'
+        );
 
-    script.onload = () => {
-      window.kakao.maps.load(() => {
-        if (!window.kakao?.maps?.LatLng) {
-          kakaoMapScriptPromise = null;
-          reject(
-            new Error(
-              "Kakao Map SDK 인증 실패: JavaScript 키와 도메인 등록을 확인하세요. " +
-                "(https://developers.kakao.com → 앱 설정 → 플랫폼 → Web)"
-            )
+        if (existingScript) {
+          if (window.kakao?.maps) {
+            resolve();
+            return;
+          }
+
+          existingScript.addEventListener("load", () => resolve(), { once: true });
+          existingScript.addEventListener(
+            "error",
+            () => reject(new Error("Kakao Map SDK 로드에 실패했습니다.")),
+            { once: true }
           );
           return;
         }
-        resolve();
+
+        const script = document.createElement("script");
+        script.async = true;
+        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&autoload=false`;
+
+        script.onload = () => resolve();
+        script.onerror = () => {
+          reject(new Error("Kakao Map SDK 로드에 실패했습니다."));
+        };
+
+        document.head.appendChild(script);
       });
-    };
+    }
 
-    script.onerror = () => {
-      kakaoMapScriptPromise = null;
-      reject(new Error("Kakao Map SDK 로드에 실패했습니다. 네트워크를 확인하세요."));
-    };
-
-    document.head.appendChild(script);
+    await waitForKakaoMapsApi();
+  })().catch((error) => {
+    kakaoMapScriptPromise = null;
+    throw error;
   });
 
   return kakaoMapScriptPromise;
 }
 
-function getMarkerId(marker: MarkerSummary): string {
-  return String(
-    marker.id ?? marker._id ?? `${marker.latitude}-${marker.longitude}`
-  );
-}
-
 function getParentId(marker: MarkerSummary): string | null {
-  const rawMarker = marker as any;
-  const parentId = rawMarker.parentId;
+  const parentId = marker.parentId;
 
   if (
     parentId === null ||
@@ -100,14 +135,10 @@ function getParentId(marker: MarkerSummary): string | null {
     return parentId;
   }
 
-  if (typeof parentId === "object") {
-    return String(parentId.id ?? parentId._id ?? "");
-  }
-
-  return String(parentId);
+  return String(parentId._id ?? "");
 }
 
-function makeOverlayContent(marker: MarkerSummary): string {
+function makeOverlayContent(title: string): string {
   return `
     <div style="
       position: relative;
@@ -125,7 +156,7 @@ function makeOverlayContent(marker: MarkerSummary): string {
       pointer-events: none;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
     ">
-      ${marker.titleKo}
+      ${title}
       <div style="
         position: absolute;
         left: 50%;
@@ -141,6 +172,27 @@ function makeOverlayContent(marker: MarkerSummary): string {
   `;
 }
 
+function showMarkerOverlay(
+  map: KakaoMap,
+  position: KakaoLatLng,
+  title: string,
+  overlayRef: MutableRefObject<KakaoCustomOverlay | null>
+) {
+  const kakaoMaps = window.kakao!.maps;
+
+  overlayRef.current?.setMap(null);
+
+  const overlay = new kakaoMaps.CustomOverlay({
+    position,
+    content: makeOverlayContent(title),
+    yAnchor: 1.9,
+    zIndex: 30
+  });
+
+  overlay.setMap(map);
+  overlayRef.current = overlay;
+}
+
 function makeCurrentLocationContent(): string {
   return `
     <div style="
@@ -154,19 +206,41 @@ function makeCurrentLocationContent(): string {
   `;
 }
 
+function makePickedLocationContent(): string {
+  return `
+    <div style="
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ef4444;
+      border: 3px solid #ffffff;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.35);
+    "></div>
+  `;
+}
+
 export default function KakaoMapView({
   markers,
   selectedMarkerId,
   currentLocation,
-  onMarkerClick
+  onMarkerClick,
+  pickMode = false,
+  onLocationPick,
+  pickedLocation,
+  defaultCenter,
+  showPickHint = false
 }: KakaoMapViewProps) {
+  const { language } = useLanguage();
+  const ui = getUi(language);
   const containerRef = useRef<HTMLDivElement | null>(null);
-
-  const mapRef = useRef<any>(null);
-  const markerRefs = useRef<any[]>([]);
-  const overlayRef = useRef<any>(null);
-  const currentLocationOverlayRef = useRef<any>(null);
-
+  const mapRef = useRef<KakaoMap | null>(null);
+  const markerRefs = useRef<KakaoMarker[]>([]);
+  const markerOverlayRef = useRef<KakaoCustomOverlay | null>(null);
+  const currentLocationOverlayRef = useRef<KakaoCustomOverlay | null>(null);
+  const pickedOverlayRef = useRef<KakaoCustomOverlay | null>(null);
+  const onMarkerClickRef = useRef(onMarkerClick);
+  const onLocationPickRef = useRef(onLocationPick);
+  const defaultCenterRef = useRef(defaultCenter ?? KAIST_CENTER);
   const [mapReady, setMapReady] = useState(false);
   const [mapLevel, setMapLevel] = useState(4);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -195,6 +269,18 @@ export default function KakaoMapView({
   }, [markers, mapLevel]);
 
   useEffect(() => {
+    onMarkerClickRef.current = onMarkerClick;
+  }, [onMarkerClick]);
+
+  useEffect(() => {
+    onLocationPickRef.current = onLocationPick;
+  }, [onLocationPick]);
+
+  useEffect(() => {
+    defaultCenterRef.current = defaultCenter ?? KAIST_CENTER;
+  }, [defaultCenter]);
+
+  useEffect(() => {
     let cancelled = false;
 
     async function initializeMap() {
@@ -205,15 +291,15 @@ export default function KakaoMapView({
           return;
         }
 
-        if (!window.kakao?.maps) {
+        if (!isKakaoMapsApiReady()) {
           throw new Error("Kakao Map SDK가 준비되지 않았습니다.");
         }
 
-        const kakaoMaps = window.kakao.maps;
-
+        const centerPoint = defaultCenterRef.current;
+        const kakaoMaps = window.kakao!.maps;
         const center = new kakaoMaps.LatLng(
-          KAIST_CENTER.latitude,
-          KAIST_CENTER.longitude
+          centerPoint.latitude,
+          centerPoint.longitude
         );
 
         const map = new kakaoMaps.Map(containerRef.current, {
@@ -225,8 +311,6 @@ export default function KakaoMapView({
 
         if (typeof map.getLevel === "function") {
           setMapLevel(map.getLevel());
-        } else {
-          setMapLevel(4);
         }
 
         kakaoMaps.event.addListener(map, "zoom_changed", () => {
@@ -235,15 +319,15 @@ export default function KakaoMapView({
           }
         });
 
-        setTimeout(() => {
-          if (cancelled) {
+        requestAnimationFrame(() => {
+          if (cancelled || !mapRef.current) {
             return;
           }
 
           map.relayout();
           map.setCenter(center);
           setMapReady(true);
-        }, 0);
+        });
       } catch (error) {
         console.error(error);
         setErrorMessage(
@@ -258,23 +342,33 @@ export default function KakaoMapView({
 
     return () => {
       cancelled = true;
+      setMapReady(false);
+      markerRefs.current.forEach((marker) => marker.setMap(null));
+      markerRefs.current = [];
+      markerOverlayRef.current?.setMap(null);
+      markerOverlayRef.current = null;
+      currentLocationOverlayRef.current?.setMap(null);
+      currentLocationOverlayRef.current = null;
+      pickedOverlayRef.current?.setMap(null);
+      pickedOverlayRef.current = null;
+      mapRef.current = null;
     };
   }, []);
 
   useEffect(() => {
     const map = mapRef.current;
 
-    if (!mapReady || !map || !window.kakao?.maps) {
+    if (!mapReady || !map || !isKakaoMapsApiReady()) {
       return;
     }
 
-    const kakaoMaps = window.kakao.maps;
+    const kakaoMaps = window.kakao!.maps;
 
-    markerRefs.current.forEach((kakaoMarker) => kakaoMarker.setMap(null));
+    markerRefs.current.forEach((marker) => marker.setMap(null));
     markerRefs.current = [];
 
-    overlayRef.current?.setMap(null);
-    overlayRef.current = null;
+    markerOverlayRef.current?.setMap(null);
+    markerOverlayRef.current = null;
 
     displayMarkers.forEach((marker) => {
       const latitude = Number(marker.latitude);
@@ -285,46 +379,63 @@ export default function KakaoMapView({
       }
 
       const position = new kakaoMaps.LatLng(latitude, longitude);
+      const title = getMarkerTitle(marker, language);
 
       const kakaoMarker = new kakaoMaps.Marker({
+        map,
         position,
-        title: marker.titleKo
+        title
       });
 
-      kakaoMarker.setMap(map);
-
       kakaoMaps.event.addListener(kakaoMarker, "click", () => {
-        overlayRef.current?.setMap(null);
-
-        const overlay = new kakaoMaps.CustomOverlay({
-          position,
-          content: makeOverlayContent(marker),
-          yAnchor: 1.9,
-          zIndex: 30
-        });
-
-        overlay.setMap(map);
-        overlayRef.current = overlay;
-
-        onMarkerClick(marker);
+        showMarkerOverlay(map, position, title, markerOverlayRef);
+        onMarkerClickRef.current?.(marker);
       });
 
       markerRefs.current.push(kakaoMarker);
     });
-
-    setTimeout(() => {
-      map.relayout();
-    }, 0);
-  }, [mapReady, displayMarkers, onMarkerClick, mapLevel]);
+  }, [displayMarkers, language, mapReady]);
 
   useEffect(() => {
     const map = mapRef.current;
 
-    if (!mapReady || !map || !currentLocation || !window.kakao?.maps) {
+    if (
+      !mapReady ||
+      !map ||
+      !pickMode ||
+      !onLocationPick ||
+      !isKakaoMapsApiReady()
+    ) {
       return;
     }
 
-    const kakaoMaps = window.kakao.maps;
+    const kakaoMaps = window.kakao!.maps;
+
+    const handler = (mouseEvent?: KakaoMouseEvent) => {
+      if (!mouseEvent) {
+        return;
+      }
+
+      const lat = mouseEvent.latLng.getLat();
+      const lng = mouseEvent.latLng.getLng();
+
+      onLocationPickRef.current?.(lat, lng);
+      map.setCenter(mouseEvent.latLng);
+    };
+
+    kakaoMaps.event.addListener(map, "click", handler);
+
+    return () => {
+      kakaoMaps.event.removeListener(map, "click", handler);
+    };
+  }, [mapReady, pickMode, onLocationPick]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+
+    if (!mapReady || !map || !currentLocation || !isKakaoMapsApiReady()) {
+      return;
+    }
 
     const latitude = Number(currentLocation.latitude);
     const longitude = Number(currentLocation.longitude);
@@ -333,37 +444,69 @@ export default function KakaoMapView({
       return;
     }
 
+    const kakaoMaps = window.kakao!.maps;
     const position = new kakaoMaps.LatLng(latitude, longitude);
 
     currentLocationOverlayRef.current?.setMap(null);
 
-    const currentLocationOverlay = new kakaoMaps.CustomOverlay({
+    const overlay = new kakaoMaps.CustomOverlay({
       position,
       content: makeCurrentLocationContent(),
+      map,
       yAnchor: 0.5,
       zIndex: 80
     });
 
-    currentLocationOverlay.setMap(map);
-    currentLocationOverlayRef.current = currentLocationOverlay;
+    currentLocationOverlayRef.current = overlay;
 
     map.setCenter(position);
     map.setLevel(3);
-
-    setTimeout(() => {
-      map.relayout();
-      map.setCenter(position);
-    }, 0);
   }, [mapReady, currentLocation]);
 
   useEffect(() => {
     const map = mapRef.current;
 
-    if (!mapReady || !map || !selectedMarkerId || !window.kakao?.maps) {
+    if (!mapReady || !map || !isKakaoMapsApiReady()) {
       return;
     }
 
-    const kakaoMaps = window.kakao.maps;
+    pickedOverlayRef.current?.setMap(null);
+    pickedOverlayRef.current = null;
+
+    if (!pickedLocation) {
+      return;
+    }
+
+    const kakaoMaps = window.kakao!.maps;
+    const position = new kakaoMaps.LatLng(
+      pickedLocation.latitude,
+      pickedLocation.longitude
+    );
+
+    const overlay = new kakaoMaps.CustomOverlay({
+      position,
+      content: makePickedLocationContent(),
+      map,
+      yAnchor: 0.5,
+      xAnchor: 0.5,
+      zIndex: 3
+    });
+
+    pickedOverlayRef.current = overlay;
+  }, [pickedLocation, mapReady]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+
+    if (!mapReady || !map || !isKakaoMapsApiReady()) {
+      return;
+    }
+
+    if (!selectedMarkerId) {
+      markerOverlayRef.current?.setMap(null);
+      markerOverlayRef.current = null;
+      return;
+    }
 
     const selected = markers.find(
       (marker) => getMarkerId(marker) === selectedMarkerId
@@ -373,29 +516,16 @@ export default function KakaoMapView({
       return;
     }
 
-    const latitude = Number(selected.latitude);
-    const longitude = Number(selected.longitude);
-
-    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
-      return;
-    }
-
-    const center = new kakaoMaps.LatLng(latitude, longitude);
+    const kakaoMaps = window.kakao!.maps;
+    const center = new kakaoMaps.LatLng(
+      selected.latitude,
+      selected.longitude
+    );
+    const title = getMarkerTitle(selected, language);
 
     map.setCenter(center);
-
-    overlayRef.current?.setMap(null);
-
-    const overlay = new kakaoMaps.CustomOverlay({
-      position: center,
-      content: makeOverlayContent(selected),
-      yAnchor: 1.9,
-      zIndex: 30
-    });
-
-    overlay.setMap(map);
-    overlayRef.current = overlay;
-  }, [mapReady, markers, selectedMarkerId]);
+    showMarkerOverlay(map, center, title, markerOverlayRef);
+  }, [markers, selectedMarkerId, mapReady, language]);
 
   return (
     <div
@@ -403,10 +533,33 @@ export default function KakaoMapView({
         width: "100%",
         height: "100%",
         position: "relative",
-        background: "#d1d5db"
+        background: "#d1d5db",
+        cursor: pickMode ? "crosshair" : "default"
       }}
     >
       <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
+
+      {pickMode && showPickHint && (
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            bottom: 24,
+            transform: "translateX(-50%)",
+            padding: "8px 14px",
+            borderRadius: 999,
+            background: "rgba(255, 255, 255, 0.92)",
+            color: "#374151",
+            fontSize: 12,
+            fontWeight: 600,
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.12)",
+            pointerEvents: "none",
+            zIndex: 6
+          }}
+        >
+          {ui.createMarker.mapClickHint}
+        </div>
+      )}
 
       {errorMessage && (
         <div

@@ -9,7 +9,6 @@ import {
   authContainerStyle,
   authInputStyle,
   authLabelStyle,
-  authPageStyle,
   authStatusBoxStyle,
   authTextareaStyle,
   authTitleStyle
@@ -90,8 +89,7 @@ export default function ManagerRegisterPage({
   }
 
   return (
-    <div style={authPageStyle}>
-      <div style={authContainerStyle}>
+    <div className="auth-page-content" style={authContainerStyle}>
         <AuthPageHeader backLabel={m.backToLogin} onBack={onGoToLogin} />
 
         <h1 style={authTitleStyle}>{m.registerTitle}</h1>
@@ -182,7 +180,6 @@ export default function ManagerRegisterPage({
             <div style={{ marginTop: 4 }}>{status.message}</div>
           </div>
         )}
-      </div>
     </div>
   );
 }

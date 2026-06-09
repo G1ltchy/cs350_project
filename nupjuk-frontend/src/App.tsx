@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PhoneFrame from "./components/PhoneFrame";
 import ManagerForgotPasswordPage from "./pages/ManagerForgotPasswordPage";
 import ManagerLoginPage from "./pages/ManagerLoginPage";
 import ManagerRegisterPage from "./pages/ManagerRegisterPage";
@@ -12,26 +13,53 @@ function App() {
   // TODO: 임시 — 배포 전 hasAuthToken()으로 되돌리기
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const usePhoneLayout =
+    page === "login" ||
+    page === "register" ||
+    page === "forgot" ||
+    (page === "map" && !isAuthenticated);
+
+  useEffect(() => {
+    const root = document.getElementById("root");
+
+    if (!root) {
+      return;
+    }
+
+    root.classList.toggle("phone-layout", usePhoneLayout);
+    root.classList.toggle("desktop-layout", !usePhoneLayout);
+  }, [usePhoneLayout]);
+
   if (page === "login") {
     return (
-      <ManagerLoginPage
-        onGoToMap={() => setPage("map")}
-        onGoToRegister={() => setPage("register")}
-        onGoToForgotPassword={() => setPage("forgot")}
-        onLoginSuccess={() => {
-          setIsAuthenticated(true);
-          setPage("map");
-        }}
-      />
+      <PhoneFrame variant="auth">
+        <ManagerLoginPage
+          onGoToMap={() => setPage("map")}
+          onGoToRegister={() => setPage("register")}
+          onGoToForgotPassword={() => setPage("forgot")}
+          onLoginSuccess={() => {
+            setIsAuthenticated(true);
+            setPage("map");
+          }}
+        />
+      </PhoneFrame>
     );
   }
 
   if (page === "register") {
-    return <ManagerRegisterPage onGoToLogin={() => setPage("login")} />;
+    return (
+      <PhoneFrame variant="auth">
+        <ManagerRegisterPage onGoToLogin={() => setPage("login")} />
+      </PhoneFrame>
+    );
   }
 
   if (page === "forgot") {
-    return <ManagerForgotPasswordPage onGoToLogin={() => setPage("login")} />;
+    return (
+      <PhoneFrame variant="auth">
+        <ManagerForgotPasswordPage onGoToLogin={() => setPage("login")} />
+      </PhoneFrame>
+    );
   }
 
   return (
