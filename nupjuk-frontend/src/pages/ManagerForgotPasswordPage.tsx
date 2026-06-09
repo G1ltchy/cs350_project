@@ -9,7 +9,6 @@ import {
   authContainerStyle,
   authInputStyle,
   authLabelStyle,
-  authPageStyle,
   authStatusBoxStyle,
   authTitleStyle
 } from "./authFormStyles";
@@ -73,8 +72,7 @@ export default function ManagerForgotPasswordPage({
   }
 
   return (
-    <div style={authPageStyle}>
-      <div style={authContainerStyle}>
+    <div className="auth-page-content" style={authContainerStyle}>
         <AuthPageHeader backLabel={m.backToLogin} onBack={onGoToLogin} />
 
         <h1 style={authTitleStyle}>{m.forgotTitle}</h1>
@@ -146,7 +144,6 @@ export default function ManagerForgotPasswordPage({
             )}
           </div>
         )}
-      </div>
     </div>
   );
 }

@@ -1,5 +1,9 @@
 /* Emergency layout fix: restore mobile frame and Kakao map area */
 
+* {
+  box-sizing: border-box;
+}
+
 html,
 body,
 #root {
@@ -10,38 +14,86 @@ body,
 }
 
 body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Noto Sans KR",
+    "Apple SD Gothic Neo",
+    Arial,
+    sans-serif;
   background: #111827;
 }
 
-#root {
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+#root.desktop-layout {
+  display: block;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+#root.phone-layout {
   display: flex;
   justify-content: center;
   align-items: stretch;
+  background: #111827;
+  overflow: hidden;
 }
 
-/* Desktop에서도 모바일 화면처럼 중앙 고정 */
-.user-map-page {
-  width: 430px !important;
-  max-width: 430px !important;
-  height: 100vh !important;
-  height: 100dvh !important;
-  position: relative !important;
-  overflow: hidden !important;
-  background: #e5e7eb !important;
+.phone-frame {
+  width: 430px;
+  max-width: 430px;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+  overflow: hidden;
+  background: #e5e7eb;
   box-shadow: 0 0 36px rgba(0, 0, 0, 0.45);
 }
 
-/* 실제 모바일에서는 전체 폭 사용 */
+.phone-frame--auth {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  padding: 20px 18px 28px;
+  overflow-y: auto;
+}
+
+.phone-frame--auth .auth-page-content {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.user-map-page {
+  width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background: #e5e7eb !important;
+}
+
 @media (max-width: 430px) {
-  #root {
+  #root.phone-layout {
     display: block;
     background: #e5e7eb;
   }
 
-  .user-map-page {
-    width: 100vw !important;
-    max-width: none !important;
+  .phone-frame {
+    width: 100vw;
+    max-width: none;
     box-shadow: none;
+  }
+
+  .phone-frame--auth {
+    background: #ffffff;
   }
 }
 

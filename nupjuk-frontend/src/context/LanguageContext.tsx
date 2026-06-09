@@ -1,52 +1,57 @@
 import {
-    createContext,
-    useContext,
-    useMemo,
-    useState,
-    type ReactNode
-  } from "react";
-  
-  type Language = "ko" | "en";
-  
-  interface LanguageContextValue {
-    language: Language;
-    setLanguage: (language: Language) => void;
-    toggleLanguage: () => void;
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+  type ReactNode
+} from "react";
+import {
+  readStoredLanguage,
+  storeLanguage,
+  type Language
+} from "../lib/language";
+
+type LanguageContextValue = {
+  language: Language;
+  setLanguage: (language: Language) => void;
+  toggleLanguage: () => void;
+};
+
+const LanguageContext = createContext<LanguageContextValue | null>(null);
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguageState] = useState<Language>(() => {
+    const initial = readStoredLanguage();
+    document.documentElement.lang = initial;
+    return initial;
+  });
+
+  const setLanguage = useCallback((next: Language) => {
+    setLanguageState(next);
+    storeLanguage(next);
+  }, []);
+
+  const toggleLanguage = useCallback(() => {
+    setLanguage(language === "ko" ? "en" : "ko");
+  }, [language, setLanguage]);
+
+  const value = useMemo(
+    () => ({ language, setLanguage, toggleLanguage }),
+    [language, setLanguage, toggleLanguage]
+  );
+
+  return (
+    <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
+  );
+}
+
+export function useLanguage(): LanguageContextValue {
+  const context = useContext(LanguageContext);
+
+  if (!context) {
+    throw new Error("useLanguage must be used within LanguageProvider");
   }
-  
-  const LanguageContext = createContext<LanguageContextValue | null>(null);
-  
-  interface LanguageProviderProps {
-    children: ReactNode;
-  }
-  
-  export function LanguageProvider({ children }: LanguageProviderProps) {
-    const [language, setLanguage] = useState<Language>("ko");
-  
-    const value = useMemo(
-      () => ({
-        language,
-        setLanguage,
-        toggleLanguage: () => {
-          setLanguage((current) => (current === "ko" ? "en" : "ko"));
-        }
-      }),
-      [language]
-    );
-  
-    return (
-      <LanguageContext.Provider value={value}>
-        {children}
-      </LanguageContext.Provider>
-    );
-  }
-  
-  export function useLanguage() {
-    const context = useContext(LanguageContext);
-  
-    if (!context) {
-      throw new Error("useLanguage must be used inside LanguageProvider");
-    }
-  
-    return context;
-  }
+
+  return context;
+}
