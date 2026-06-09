@@ -1,26 +1,30 @@
-interface SearchBarProps {
+type SearchBarProps = {
   value: string;
   onChange: (value: string) => void;
-}
+  placeholder?: string;
+};
 
-export default function SearchBar({ value, onChange }: SearchBarProps) {
+export default function SearchBar({
+  value,
+  onChange,
+  placeholder = "Search markers"
+}: SearchBarProps) {
   return (
     <input
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      placeholder="Search markers"
+      placeholder={placeholder}
       style={{
         width: "100%",
-        padding: "10px 12px",
-        borderRadius: 14,
+        padding: "13px 16px",
+        borderRadius: 18,
         border: "none",
         outline: "none",
         background: "#ffffff",
         color: "#111827",
-        fontSize: 14,
-        fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", Arial, sans-serif',
-        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.12)"
+        fontSize: 16,
+        fontWeight: 600,
+        boxShadow: "0 4px 18px rgba(0, 0, 0, 0.14)"
       }}
     />
   );
