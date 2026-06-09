@@ -2,52 +2,60 @@ import { useRef, useState } from "react";
 import type { MarkerCategory } from "../types/marker";
 
 type CategoryFilter = MarkerCategory | "all";
+type Language = "ko" | "en";
 
 interface CategoryChipsProps {
   selected: CategoryFilter;
   onSelect: (category: CategoryFilter) => void;
+  language?: Language;
 }
 
-const categories: { label: string; value: CategoryFilter }[] = [
-  { label: "전체", value: "all" },
-  { label: "건물", value: "building" },
-  { label: "식당", value: "dining" },
-  { label: "카페", value: "cafe" },
-  { label: "버스", value: "bus" },
-  { label: "시설", value: "facility" },
-  { label: "도서관", value: "library" },
-  { label: "기타", value: "etc" }
+const categories: {
+  labelKo: string;
+  labelEn: string;
+  value: CategoryFilter;
+}[] = [
+  { labelKo: "전체", labelEn: "All", value: "all" },
+  { labelKo: "건물", labelEn: "Buildings", value: "building" },
+  { labelKo: "식당", labelEn: "Dining", value: "dining" },
+  { labelKo: "카페", labelEn: "Cafe", value: "cafe" },
+  { labelKo: "버스", labelEn: "Bus", value: "bus" },
+  { labelKo: "시설", labelEn: "Facilities", value: "facility" },
+  { labelKo: "도서관", labelEn: "Library", value: "library" },
+  { labelKo: "기타", labelEn: "Other", value: "etc" }
 ];
 
 export default function CategoryChips({
   selected,
-  onSelect
+  onSelect,
+  language = "ko"
 }: CategoryChipsProps) {
   const rowRef = useRef<HTMLDivElement | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStartX = useRef(0);
-  const scrollStartX = useRef(0);
-  const didDrag = useRef(false);
 
-  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+  const [isDragging, setIsDragging] = useState(false);
+  const startXRef = useRef(0);
+  const startScrollLeftRef = useRef(0);
+  const movedRef = useRef(false);
+
+  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (!rowRef.current) return;
 
     setIsDragging(true);
-    didDrag.current = false;
-    dragStartX.current = event.pageX;
-    scrollStartX.current = rowRef.current.scrollLeft;
+    movedRef.current = false;
+    startXRef.current = event.clientX;
+    startScrollLeftRef.current = rowRef.current.scrollLeft;
   }
 
-  function handleMouseMove(event: React.MouseEvent<HTMLDivElement>) {
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
     if (!isDragging || !rowRef.current) return;
 
-    const deltaX = event.pageX - dragStartX.current;
+    const deltaX = event.clientX - startXRef.current;
 
-    if (Math.abs(deltaX) > 4) {
-      didDrag.current = true;
+    if (Math.abs(deltaX) > 6) {
+      movedRef.current = true;
     }
 
-    rowRef.current.scrollLeft = scrollStartX.current - deltaX;
+    rowRef.current.scrollLeft = startScrollLeftRef.current - deltaX;
   }
 
   function stopDragging() {
@@ -57,18 +65,17 @@ export default function CategoryChips({
   function handleWheel(event: React.WheelEvent<HTMLDivElement>) {
     if (!rowRef.current) return;
 
-    event.preventDefault();
+    const amount =
+      Math.abs(event.deltaY) > Math.abs(event.deltaX)
+        ? event.deltaY
+        : event.deltaX;
 
-    if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
-      rowRef.current.scrollLeft += event.deltaY;
-    } else {
-      rowRef.current.scrollLeft += event.deltaX;
-    }
+    rowRef.current.scrollLeft += amount;
   }
 
-  function handleCategoryClick(category: CategoryFilter) {
-    if (didDrag.current) {
-      didDrag.current = false;
+  function handleChipPointerUp(category: CategoryFilter) {
+    if (movedRef.current) {
+      movedRef.current = false;
       return;
     }
 
@@ -79,23 +86,25 @@ export default function CategoryChips({
     <div
       ref={rowRef}
       className={`category-chip-row ${isDragging ? "dragging" : ""}`}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={stopDragging}
-      onMouseLeave={stopDragging}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={stopDragging}
+      onPointerCancel={stopDragging}
+      onPointerLeave={stopDragging}
       onWheel={handleWheel}
     >
       {categories.map((category) => {
         const isSelected = selected === category.value;
+        const label = language === "ko" ? category.labelKo : category.labelEn;
 
         return (
           <button
             key={category.value}
             type="button"
-            onClick={() => handleCategoryClick(category.value)}
             className={`category-chip ${isSelected ? "selected" : ""}`}
+            onPointerUp={() => handleChipPointerUp(category.value)}
           >
-            {category.label}
+            {label}
           </button>
         );
       })}
