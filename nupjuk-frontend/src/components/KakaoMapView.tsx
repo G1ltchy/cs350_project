@@ -31,6 +31,10 @@ function loadKakaoMapScript(): Promise<void> {
     );
   }
 
+  if (window.kakao?.maps?.LatLng) {
+    return Promise.resolve();
+  }
+
   if (window.kakao?.maps) {
     return new Promise((resolve) => {
       window.kakao!.maps.load(resolve);
@@ -56,7 +60,8 @@ function loadKakaoMapScript(): Promise<void> {
     };
 
     script.onerror = () => {
-      reject(new Error("Kakao Map SDK 로드에 실패했습니다."));
+      kakaoMapScriptPromise = null;
+      reject(new Error("Kakao Map SDK 로드에 실패했습니다. 네트워크를 확인하세요."));
     };
 
     document.head.appendChild(script);
