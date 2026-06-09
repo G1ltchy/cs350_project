@@ -10,7 +10,7 @@ type Page = "map" | "login" | "register" | "forgot";
 function App() {
   const [page, setPage] = useState<Page>("map");
   // TODO: 임시 — 배포 전 hasAuthToken()으로 되돌리기
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   if (page === "login") {
     return (

@@ -1,64 +1,81 @@
-interface Window {
-  kakao: {
-    maps: {
-      load: (callback: () => void) => void;
+type KakaoLatLng = {
+  getLat(): number;
+  getLng(): number;
+};
 
-      LatLng: new (lat: number, lng: number) => KakaoLatLng;
+type KakaoLatLngBounds = {
+  extend(position: KakaoLatLng): void;
+};
 
-      Map: new (
-        container: HTMLElement,
-        options: KakaoMapOptions
-      ) => KakaoMap;
-
-      Marker: new (options: KakaoMarkerOptions) => KakaoMarker;
-
-      CustomOverlay: new (
-        options: KakaoCustomOverlayOptions
-      ) => KakaoCustomOverlay;
-
-      event: {
-        addListener: (
-          target: KakaoMarker | KakaoMap,
-          type: string,
-          handler: () => void
-        ) => void;
-      };
-    };
-  };
-}
-
-interface KakaoLatLng {}
-
-interface KakaoMapOptions {
+type KakaoMapOptions = {
   center: KakaoLatLng;
   level: number;
-}
+};
 
-interface KakaoMap {
-  setCenter: (latlng: KakaoLatLng) => void;
-  setLevel: (level: number) => void;
-  relayout: () => void;
-}
+type KakaoMap = {
+  setCenter(position: KakaoLatLng): void;
+  setLevel(level: number): void;
+  getLevel(): number;
+  relayout(): void;
+  setBounds(bounds: KakaoLatLngBounds): void;
+};
 
-interface KakaoMarkerOptions {
+type KakaoMarkerOptions = {
+  map?: KakaoMap;
   position: KakaoLatLng;
-  map?: KakaoMap | null;
   title?: string;
-}
+};
 
-interface KakaoMarker {
-  setMap: (map: KakaoMap | null) => void;
-}
+type KakaoMarker = {
+  setMap(map: KakaoMap | null): void;
+  setPosition(position: KakaoLatLng): void;
+};
 
-interface KakaoCustomOverlayOptions {
+type KakaoCustomOverlayOptions = {
   position: KakaoLatLng;
-  content: string | HTMLElement;
+  content: string;
   yAnchor?: number;
-  xAnchor?: number;
   zIndex?: number;
+};
+
+type KakaoCustomOverlay = {
+  setMap(map: KakaoMap | null): void;
+};
+
+declare global {
+  interface Window {
+    kakao?: {
+      maps: {
+        load(callback: () => void): void;
+
+        LatLng: new (
+          latitude: number,
+          longitude: number
+        ) => KakaoLatLng;
+
+        LatLngBounds: new () => KakaoLatLngBounds;
+
+        Map: new (
+          container: HTMLElement,
+          options: KakaoMapOptions
+        ) => KakaoMap;
+
+        Marker: new (options: KakaoMarkerOptions) => KakaoMarker;
+
+        CustomOverlay: new (
+          options: KakaoCustomOverlayOptions
+        ) => KakaoCustomOverlay;
+
+        event: {
+          addListener(
+            target: KakaoMap | KakaoMarker,
+            type: string,
+            callback: () => void
+          ): void;
+        };
+      };
+    };
+  }
 }
 
-interface KakaoCustomOverlay {
-  setMap: (map: KakaoMap | null) => void;
-  setPosition: (position: KakaoLatLng) => void;
-}
+export {};

@@ -1,287 +1,4 @@
-.user-map-page {
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  position: relative;
-  overflow: hidden;
-  background: #e5e7eb;
-}
-
-.map-top-controls {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  right: 16px;
-  z-index: 10;
-}
-
-.map-search-row {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-}
-
-.map-search-box {
-  flex: 1;
-  min-width: 0;
-}
-
-.manager-login-button {
-  flex-shrink: 0;
-  margin-top: 2px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: none;
-  background: #374151;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
-
-.map-status-row {
-  margin-top: 8px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.map-status-chip {
-  padding: 7px 10px;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #374151;
-  font-size: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.map-status-loading {
-  background: #eff6ff;
-  color: #1d4ed8;
-}
-
-.map-status-mock {
-  background: #fff7ed;
-  color: #9a3412;
-}
-
-.map-error-message {
-  margin-top: 8px;
-  padding: 10px;
-  border-radius: 12px;
-  background: #ffffff;
-  color: #92400e;
-  font-size: 12px;
-  line-height: 1.4;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.map-main {
-  width: 100%;
-  height: 100%;
-}
-
-.map-empty-message {
-  position: absolute;
-  left: 24px;
-  right: 24px;
-  top: 45%;
-  z-index: 8;
-  padding: 18px;
-  border-radius: 18px;
-  background: #ffffff;
-  color: #374151;
-  text-align: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
-}
-
-/* Category chips */
-
-.category-chip-row {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 8px 0;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-.category-chip-row::-webkit-scrollbar {
-  display: none;
-}
-
-.category-chip {
-  flex-shrink: 0;
-  padding: 8px 13px;
-  border-radius: 999px;
-  border: none;
-  background: #ffffff;
-  color: #374151;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.category-chip.selected {
-  background: #111827;
-  color: #ffffff;
-}
-
-/* Bottom sheet */
-
-.bottom-sheet-container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 20;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.bottom-sheet {
-  width: 100%;
-  max-height: 46vh;
-  overflow-y: auto;
-  padding: 14px 18px 18px;
-  border-top-left-radius: 22px;
-  border-top-right-radius: 22px;
-  background: #ffffff;
-  box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.18);
-  pointer-events: auto;
-}
-
-.bottom-sheet-handle {
-  width: 42px;
-  height: 4px;
-  border-radius: 999px;
-  background: #d1d5db;
-  margin: 0 auto 12px;
-}
-
-.bottom-sheet-close {
-  margin-bottom: 12px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: none;
-  background: #f3f4f6;
-  color: #374151;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-/* Mobile layout */
-
-@media (max-width: 640px) {
-  .map-top-controls {
-    top: 10px;
-    left: 10px;
-    right: 10px;
-  }
-
-  .map-search-row {
-    gap: 6px;
-  }
-
-  .manager-login-button {
-    padding: 8px 10px;
-    font-size: 11px;
-    border-radius: 10px;
-  }
-
-  .map-status-row {
-    margin-top: 6px;
-    gap: 6px;
-  }
-
-  .map-status-chip {
-    padding: 6px 9px;
-    font-size: 11px;
-  }
-
-  .category-chip-row {
-    gap: 6px;
-    padding: 7px 0;
-  }
-
-  .category-chip {
-    padding: 7px 11px;
-    font-size: 12px;
-  }
-
-  .bottom-sheet {
-    max-height: 52vh;
-    padding: 12px 14px 16px;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-  }
-
-  .map-empty-message {
-    left: 16px;
-    right: 16px;
-    padding: 15px;
-    font-size: 14px;
-  }
-}
-
-/* Very small mobile */
-
-@media (max-width: 430px) {
-  .manager-login-button {
-    position: absolute;
-    top: 46px;
-    right: 0;
-    padding: 7px 9px;
-    font-size: 10px;
-    opacity: 0.92;
-  }
-
-  .map-status-row {
-    max-width: calc(100vw - 20px);
-  }
-
-  .bottom-sheet {
-    max-height: 55vh;
-  }
-}
-
-@media (max-width: 640px) {
-  .manager-login-button {
-    display: none;
-  }
-
-  .map-top-controls {
-    top: 8px;
-    left: 8px;
-    right: 8px;
-  }
-
-  .category-chip-row {
-    width: 100%;
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding: 7px 0;
-  }
-
-  .category-chip {
-    flex: 0 0 auto;
-    padding: 7px 11px;
-    font-size: 12px;
-    white-space: nowrap;
-  }
-
-  .map-status-row {
-    margin-top: 4px;
-  }
-}
-
-/* Force mobile-app-like layout even on desktop web */
+/* Emergency layout fix: restore mobile frame and Kakao map area */
 
 html,
 body,
@@ -294,259 +11,27 @@ body,
 
 body {
   background: #111827;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-/* The whole app looks like a mobile screen on desktop */
-.user-map-page {
-  width: 100%;
-  max-width: 430px;
-  height: 100vh;
-  height: 100dvh;
-  position: relative;
-  overflow: hidden;
-  background: #e5e7eb;
-  box-shadow: 0 0 36px rgba(0, 0, 0, 0.45);
-}
-
-/* On real mobile, use the full screen */
-@media (max-width: 430px) {
-  body {
-    background: #e5e7eb;
-  }
-
-  .user-map-page {
-    max-width: none;
-    width: 100vw;
-    box-shadow: none;
-  }
-}
-
-/* Top controls */
-
-.map-top-controls {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  z-index: 10;
-}
-
-.map-search-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.map-search-box {
-  flex: 1;
-  min-width: 0;
-}
-
-/* Hide manager login in mobile-style user screen */
-.manager-login-button {
-  display: none;
-}
-
-/* Category chips */
-
-.category-chip-row {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  flex-wrap: nowrap;
-  padding: 7px 0;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-.category-chip-row::-webkit-scrollbar {
-  display: none;
-}
-
-.category-chip {
-  flex: 0 0 auto;
-  padding: 7px 11px;
-  border-radius: 999px;
-  border: none;
-  background: #ffffff;
-  color: #374151;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.category-chip.selected {
-  background: #111827;
-  color: #ffffff;
-}
-
-/* Status chips */
-
-.map-status-row {
-  margin-top: 4px;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.map-status-chip {
-  padding: 6px 9px;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #374151;
-  font-size: 11px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.map-status-loading {
-  background: #eff6ff;
-  color: #1d4ed8;
-}
-
-.map-status-mock {
-  background: #fff7ed;
-  color: #9a3412;
-}
-
-.map-error-message {
-  margin-top: 6px;
-  padding: 8px 10px;
-  border-radius: 12px;
-  background: #ffffff;
-  color: #92400e;
-  font-size: 11px;
-  line-height: 1.4;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-/* Map area */
-
-.map-main {
-  width: 100%;
-  height: 100%;
-}
-
-.map-empty-message {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  top: 45%;
-  z-index: 8;
-  padding: 15px;
-  border-radius: 16px;
-  background: #ffffff;
-  color: #374151;
-  text-align: center;
-  font-size: 14px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
-}
-
-/* Bottom sheet: mobile-app style */
-
-.bottom-sheet-container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 20;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.bottom-sheet {
-  width: 100%;
-  max-height: 55vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 12px 14px 16px;
-  border-radius: 20px 20px 0 0;
-  background: #ffffff;
-  box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.18);
-  pointer-events: auto;
-}
-
-.bottom-sheet-handle {
-  width: 42px;
-  height: 4px;
-  border-radius: 999px;
-  background: #d1d5db;
-  margin: 0 auto 12px;
-}
-
-.bottom-sheet-close {
-  margin-bottom: 12px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: none;
-  background: #f3f4f6;
-  color: #374151;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-/* Final mobile-frame layout override */
-
-html,
-body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-  background: #111827;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    "Noto Sans KR",
-    "Apple SD Gothic Neo",
-    Arial,
-    sans-serif;
 }
 
 #root {
-  width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: stretch;
-  background: #111827;
-  overflow: hidden;
 }
 
-/* Desktop browser에서도 모바일 앱 프레임처럼 중앙 고정 */
+/* Desktop에서도 모바일 화면처럼 중앙 고정 */
 .user-map-page {
-  width: 390px;
-  max-width: 390px;
-  height: 100vh;
-  height: 100dvh;
-  position: relative;
-  overflow: hidden;
-  background: #e5e7eb;
+  width: 430px !important;
+  max-width: 430px !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background: #e5e7eb !important;
   box-shadow: 0 0 36px rgba(0, 0, 0, 0.45);
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    "Noto Sans KR",
-    "Apple SD Gothic Neo",
-    Arial,
-    sans-serif;
 }
 
-/* 실제 모바일 기기에서는 화면 전체 사용 */
+/* 실제 모바일에서는 전체 폭 사용 */
 @media (max-width: 430px) {
   #root {
     display: block;
@@ -554,135 +39,155 @@ body {
   }
 
   .user-map-page {
-    width: 100vw;
-    max-width: none;
+    width: 100vw !important;
+    max-width: none !important;
     box-shadow: none;
   }
 }
 
-/* 지도 위 UI 폰트 통일 */
-.map-top-controls,
-.category-chip,
-.map-status-chip,
-.map-error-message,
-.manager-login-button,
-.bottom-sheet,
-.bottom-sheet button,
-.map-empty-message {
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    "Noto Sans KR",
-    "Apple SD Gothic Neo",
-    Arial,
-    sans-serif;
+/* 지도는 반드시 전체 화면을 차지해야 함 */
+.map-main {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1 !important;
+  background: #d1d5db !important;
 }
 
-/* 검색창 폰트/크기 정리 */
-input,
-button {
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    "Noto Sans KR",
-    "Apple SD Gothic Neo",
-    Arial,
-    sans-serif;
+/* KakaoMapView 내부 div까지 강제로 높이 확보 */
+.map-main > div {
+  width: 100% !important;
+  height: 100% !important;
 }
 
-/* 모바일 프레임 안에서 상단 UI가 너무 커지지 않게 */
+/* 상단 컨트롤은 지도 위에 떠야 함 */
 .map-top-controls {
-  top: 10px;
-  left: 10px;
-  right: 10px;
+  position: absolute !important;
+  top: 10px !important;
+  left: 10px !important;
+  right: 10px !important;
+  z-index: 10 !important;
 }
 
-/* Manager Login은 사용자용 모바일 화면에서는 숨김 */
+/* 검색창 + 버튼 */
+.map-search-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.map-search-box {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
 .manager-login-button {
-  display: none;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  padding: 8px 9px;
+  border-radius: 12px;
+  border: none;
+  background: #111827;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
 }
 
-/* 카테고리 칩 */
+/* 카테고리 슬라이드 + 클릭 */
 .category-chip-row {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  flex-wrap: nowrap;
-  padding: 7px 0;
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 6px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 7px 2px 7px 0 !important;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  cursor: grab;
+  user-select: none;
 }
 
 .category-chip-row::-webkit-scrollbar {
   display: none;
 }
 
+.category-chip-row.dragging {
+  cursor: grabbing;
+}
+
 .category-chip {
-  flex: 0 0 auto;
-  padding: 7px 11px;
-  border-radius: 999px;
-  border: none;
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  padding: 7px 11px !important;
+  border-radius: 999px !important;
+  border: none !important;
   background: #ffffff;
   color: #374151;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
+  font-size: 12px !important;
+  font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  pointer-events: auto !important;
 }
 
 .category-chip.selected {
-  background: #111827;
-  color: #ffffff;
+  background: #111827 !important;
+  color: #ffffff !important;
 }
 
-/* 표시 중 칩 */
 .map-status-row {
-  margin-top: 4px;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  flex-wrap: wrap;
+  margin-top: 4px !important;
+  display: flex !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
 }
 
 .map-status-chip {
-  padding: 6px 9px;
-  border-radius: 999px;
+  padding: 6px 9px !important;
+  border-radius: 999px !important;
   background: #ffffff;
   color: #374151;
-  font-size: 11px;
+  font-size: 11px !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-/* Bottom Sheet도 모바일 프레임 폭에 맞춤 */
+/* Bottom sheet */
 .bottom-sheet-container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 20;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 20 !important;
+  display: flex !important;
+  justify-content: center !important;
+  pointer-events: none !important;
 }
 
 .bottom-sheet {
-  width: 100%;
-  max-height: 55vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 12px 14px 16px;
-  border-radius: 20px 20px 0 0;
-  background: #ffffff;
+  width: 100% !important;
+  max-height: 55vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 12px 14px 16px !important;
+  border-radius: 20px 20px 0 0 !important;
+  background: #ffffff !important;
   box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.18);
-  pointer-events: auto;
+  pointer-events: auto !important;
 }
 
+/* Final fix: marker detail typography and bottom sheet content */
+
 .marker-detail {
+  width: 100%;
   color: #111827;
   font-family:
     -apple-system,
@@ -692,27 +197,43 @@ button {
     "Noto Sans KR",
     "Apple SD Gothic Neo",
     Arial,
-    sans-serif;
+    sans-serif !important;
+}
+
+.marker-detail,
+.marker-detail * {
+  box-sizing: border-box;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Noto Sans KR",
+    "Apple SD Gothic Neo",
+    Arial,
+    sans-serif !important;
 }
 
 .marker-detail-header {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .marker-title {
   margin: 0 0 4px;
-  font-size: 24px;
-  font-weight: 800;
-  line-height: 1.2;
+  font-size: 24px !important;
+  font-weight: 850;
+  line-height: 1.22;
   color: #111827;
+  letter-spacing: -0.02em;
 }
 
 .marker-title-en {
   margin: 0 0 10px;
-  font-size: 14px;
+  font-size: 14px !important;
+  font-weight: 600;
   line-height: 1.35;
   color: #6b7280;
 }
@@ -724,8 +245,8 @@ button {
   border-radius: 999px;
   background: #eef2ff;
   color: #3730a3;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 12px !important;
+  font-weight: 800;
 }
 
 .marker-description-section {
@@ -733,7 +254,8 @@ button {
 }
 
 .marker-description {
-  font-size: 14px;
+  margin: 0;
+  font-size: 14px !important;
   line-height: 1.55;
   color: #111827;
 }
@@ -744,10 +266,11 @@ button {
 
 .marker-description li {
   margin: 4px 0 4px 18px;
+  padding-left: 0;
 }
 
 .marker-dynamic-card {
-  margin-top: 16px;
+  margin-top: 14px;
   padding: 12px;
   border-radius: 14px;
   background: #f9fafb;
@@ -755,32 +278,31 @@ button {
 
 .marker-dynamic-card h3 {
   margin: 0 0 8px;
-  font-size: 15px;
+  font-size: 15px !important;
   font-weight: 800;
 }
 
 .marker-dynamic-card p {
   margin: 0;
-  font-size: 14px;
+  font-size: 14px !important;
   color: #374151;
 }
 
 .marker-external-link {
-  display: inline-flex;
   color: #2563eb;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 14px !important;
+  font-weight: 800;
   text-decoration: none;
 }
 
 .marker-children-section {
-  margin-top: 18px;
+  margin-top: 16px;
 }
 
 .marker-children-section h3 {
   margin: 0 0 10px;
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 15px !important;
+  font-weight: 850;
 }
 
 .marker-child-list {
@@ -802,295 +324,429 @@ button {
 
 .marker-child-button span {
   display: block;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 14px !important;
+  font-weight: 750;
 }
 
 .marker-child-button small {
   display: block;
   margin-top: 2px;
-  font-size: 12px;
+  font-size: 12px !important;
   color: #6b7280;
 }
 
 .marker-navigation-button {
   width: 100%;
-  margin-top: 18px;
+  margin-top: 16px;
   padding: 13px 14px;
   border-radius: 14px;
   border: none;
   background: #2563eb;
   color: #ffffff;
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 15px !important;
+  font-weight: 850;
   cursor: pointer;
 }
+
+/* Bottom sheet visual fix */
+
+.bottom-sheet {
+  max-height: 48vh !important;
+  padding: 14px 16px 18px !important;
+  border-radius: 22px 22px 0 0 !important;
+  background: #ffffff !important;
+  overflow-y: auto !important;
+}
+
+.bottom-sheet-close {
+  margin-bottom: 12px !important;
+  padding: 6px 10px !important;
+  border-radius: 999px !important;
+  border: none !important;
+  background: #f3f4f6 !important;
+  color: #374151 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+}
+
+.bottom-sheet-handle {
+  width: 42px !important;
+  height: 4px !important;
+  border-radius: 999px !important;
+  background: #d1d5db !important;
+  margin: 0 auto 12px !important;
+}
+
+/* Slightly smaller detail text inside mobile frame */
 
 @media (max-width: 430px) {
   .marker-title {
-    font-size: 22px;
+    font-size: 22px !important;
   }
 
   .marker-title-en {
-    font-size: 13px;
+    font-size: 13px !important;
   }
 
   .marker-description {
-    font-size: 13px;
+    font-size: 13px !important;
+  }
+
+  .marker-navigation-button {
+    font-size: 14px !important;
+  }
+
+  .bottom-sheet {
+    max-height: 50vh !important;
+    padding: 12px 14px 16px !important;
   }
 }
 
-/* Horizontal draggable category chips */
+
+/* Final fix for category chip horizontal drag and click */
 
 .category-chip-row {
-  width: 100%;
-  max-width: 100%;
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 8px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 8px 2px 8px 0;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-x;
-  cursor: grab;
-  user-select: none;
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 8px 2px 8px 0 !important;
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x !important;
+  cursor: grab !important;
+  user-select: none !important;
+  pointer-events: auto !important;
 }
 
 .category-chip-row.dragging {
-  cursor: grabbing;
+  cursor: grabbing !important;
 }
 
 .category-chip-row::-webkit-scrollbar {
-  display: none;
+  display: none !important;
 }
 
 .category-chip {
-  flex: 0 0 auto;
-  white-space: nowrap;
-  padding: 8px 13px;
-  border-radius: 999px;
-  border: none;
-  background: #ffffff;
-  color: #374151;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
-
-.category-chip-row.dragging .category-chip {
-  pointer-events: none;
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  padding: 8px 13px !important;
+  border-radius: 999px !important;
+  border: none !important;
+  background: #ffffff !important;
+  color: #374151 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+  pointer-events: auto !important;
+  user-select: none !important;
 }
 
 .category-chip.selected {
-  background: #111827;
-  color: #ffffff;
+  background: #111827 !important;
+  color: #ffffff !important;
+}
+
+/* 이전 코드가 클릭을 막고 있어도 무조건 다시 살림 */
+.category-chip-row.dragging .category-chip {
+  pointer-events: auto !important;
 }
 
 @media (max-width: 430px) {
   .category-chip-row {
-    gap: 6px;
-    padding: 7px 2px 7px 0;
+    gap: 6px !important;
+    padding: 7px 2px 7px 0 !important;
   }
 
   .category-chip {
-    padding: 7px 11px;
-    font-size: 12px;
+    padding: 7px 11px !important;
+    font-size: 12px !important;
   }
 }
 
+/* Category chips: click + drag scroll both enabled */
 
-
-/* Final mobile frame width + manager login restore */
-
-#root {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: stretch;
-  background: #111827;
-  overflow: hidden;
+.category-chip-row {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 8px 2px 8px 0 !important;
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x !important;
+  cursor: grab !important;
+  user-select: none !important;
+  pointer-events: auto !important;
 }
 
-/* 데스크탑 웹에서도 아이폰 큰 화면처럼 보이게 */
-.user-map-page {
-  width: 430px;
-  max-width: 430px;
-  height: 100vh;
-  height: 100dvh;
+.category-chip-row.dragging {
+  cursor: grabbing !important;
+}
+
+.category-chip-row::-webkit-scrollbar {
+  display: none !important;
+}
+
+.category-chip {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  padding: 8px 13px !important;
+  border-radius: 999px !important;
+  border: none !important;
+  background: #ffffff !important;
+  color: #374151 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+  pointer-events: auto !important;
+  user-select: none !important;
+  touch-action: pan-x !important;
+}
+
+.category-chip.selected {
+  background: #111827 !important;
+  color: #ffffff !important;
+}
+
+/* 예전 코드가 남아 있어도 클릭을 막지 않게 덮어쓰기 */
+.category-chip-row.dragging .category-chip {
+  pointer-events: auto !important;
+}
+
+@media (max-width: 430px) {
+  .category-chip-row {
+    gap: 6px !important;
+    padding: 7px 2px 7px 0 !important;
+  }
+
+  .category-chip {
+    padding: 7px 11px !important;
+    font-size: 12px !important;
+  }
+}
+
+.category-chip-row {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 8px 2px 8px 0 !important;
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x !important;
+  cursor: grab !important;
+  user-select: none !important;
+  pointer-events: auto !important;
+}
+
+.category-chip-row.dragging {
+  cursor: grabbing !important;
+}
+
+.category-chip-row::-webkit-scrollbar {
+  display: none !important;
+}
+
+.category-chip {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  padding: 8px 13px !important;
+  border-radius: 999px !important;
+  border: none !important;
+  background: #ffffff !important;
+  color: #374151 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+  pointer-events: auto !important;
+  user-select: none !important;
+}
+
+.category-chip.selected {
+  background: #111827 !important;
+  color: #ffffff !important;
+}
+
+.category-chip-row.dragging .category-chip {
+  pointer-events: auto !important;
+}
+
+/* Settings button replacing Manager Login */
+
+.settings-menu-wrapper {
   position: relative;
-  overflow: hidden;
-  background: #e5e7eb;
-  box-shadow: 0 0 36px rgba(0, 0, 0, 0.45);
-}
-
-/* 실제 모바일에서는 기기 화면 전체 사용 */
-@media (max-width: 430px) {
-  #root {
-    display: block;
-    background: #e5e7eb;
-  }
-
-  .user-map-page {
-    width: 100vw;
-    max-width: none;
-    box-shadow: none;
-  }
-}
-
-/* 상단 컨트롤 */
-.map-top-controls {
-  top: 10px;
-  left: 10px;
-  right: 10px;
-}
-
-/* 검색창과 로그인 버튼 */
-.map-search-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.map-search-box {
-  flex: 1;
-  min-width: 0;
-}
-
-/* Manager Login 버튼 다시 표시 */
-.manager-login-button {
-  display: block !important;
   flex: 0 0 auto;
-  padding: 9px 10px;
-  border-radius: 14px;
-  border: none;
-  background: #111827;
-  color: #ffffff;
-  font-size: 11px;
-  font-weight: 800;
-  white-space: nowrap;
-  cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  z-index: 100;
 }
 
-/* 카테고리 칩 가로 스크롤 */
-.category-chip-row {
-  width: 100%;
-  max-width: 100%;
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 8px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 8px 2px 8px 0;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-x;
-  cursor: grab;
-  user-select: none;
-}
-
-.category-chip-row.dragging {
-  cursor: grabbing;
-}
-
-.category-chip-row::-webkit-scrollbar {
-  display: none;
-}
-
-.category-chip {
-  flex: 0 0 auto;
-  white-space: nowrap;
-  padding: 8px 13px;
+.settings-gear-button {
+  width: 42px;
+  height: 42px;
   border-radius: 999px;
   border: none;
-  background: #ffffff;
-  color: #374151;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
-
-.category-chip-row.dragging .category-chip {
-  pointer-events: none;
-}
-
-.category-chip.selected {
   background: #111827;
   color: #ffffff;
-}
-
-/* 작은 아이폰 화면에서는 로그인 버튼을 줄임 */
-@media (max-width: 430px) {
-  .map-top-controls {
-    top: 8px;
-    left: 8px;
-    right: 8px;
-  }
-
-  .map-search-row {
-    gap: 6px;
-  }
-
-  .manager-login-button {
-    padding: 8px 8px;
-    border-radius: 12px;
-    font-size: 10px;
-  }
-
-  .category-chip-row {
-    gap: 6px;
-    padding: 7px 2px 7px 0;
-  }
-
-  .category-chip {
-    padding: 7px 11px;
-    font-size: 12px;
-  }
-}
-
-/* Final override: mobile frame width + manager login visible */
-
-.user-map-page {
-  width: 430px;
-  max-width: 430px;
-}
-
-@media (max-width: 430px) {
-  .user-map-page {
-    width: 100vw;
-    max-width: none;
-  }
-}
-
-.manager-login-button {
-  display: inline-flex !important;
+  font-size: 19px;
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 auto;
-  padding: 9px 10px;
-  border-radius: 14px;
-  border: none;
-  background: #111827;
-  color: #ffffff;
-  font-size: 11px;
-  font-weight: 800;
-  white-space: nowrap;
-  cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
 }
 
-.map-search-row {
+.settings-gear-button:active {
+  transform: scale(0.96);
+}
+
+.settings-popover {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  min-width: 164px;
+  padding: 8px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 7px;
+  z-index: 120;
+}
+
+.settings-menu-button {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #f3f4f6;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.settings-menu-button:hover {
+  background: #e5e7eb;
+}
+
+.settings-menu-button:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 430px) {
+  .settings-gear-button {
+    width: 39px;
+    height: 39px;
+    font-size: 18px;
+  }
+
+  .settings-popover {
+    top: 47px;
+    right: 0;
+    min-width: 154px;
+  }
+
+  .settings-menu-button {
+    font-size: 12px;
+    padding: 9px 11px;
+  }
+}
+
+
+/* Fix search bar and settings button overlap */
+
+.map-search-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
 }
 
 .map-search-box {
-  flex: 1;
-  min-width: 0;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+/* SearchBar 내부 input이 부모 너비만 쓰도록 제한 */
+.map-search-box input {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.settings-menu-wrapper {
+  flex: 0 0 44px !important;
+  width: 44px !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.settings-gear-button {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  border-radius: 999px !important;
+  font-size: 18px !important;
+}
+
+/* 모바일 프레임에서는 조금 더 작게 */
+@media (max-width: 430px) {
+  .map-search-row {
+    gap: 8px !important;
+  }
+
+  .settings-menu-wrapper {
+    flex: 0 0 42px !important;
+    width: 42px !important;
+    height: 42px !important;
+  }
+
+  .settings-gear-button {
+    width: 39px !important;
+    height: 39px !important;
+    min-width: 39px !important;
+    font-size: 17px !important;
+  }
+}
+
+/* My location button */
+
+.my-location-button {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 850;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+  white-space: nowrap;
+}
+
+.my-location-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.my-location-button:active {
+  transform: scale(0.97);
 }
