@@ -51,12 +51,19 @@ function loadKakaoMapScript(): Promise<void> {
     script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&autoload=false`;
 
     script.onload = () => {
-      if (!window.kakao?.maps) {
-        reject(new Error("Kakao Map SDK가 정상적으로 초기화되지 않았습니다."));
-        return;
-      }
-
-      window.kakao.maps.load(resolve);
+      window.kakao.maps.load(() => {
+        if (!window.kakao?.maps?.LatLng) {
+          kakaoMapScriptPromise = null;
+          reject(
+            new Error(
+              "Kakao Map SDK 인증 실패: JavaScript 키와 도메인 등록을 확인하세요. " +
+                "(https://developers.kakao.com → 앱 설정 → 플랫폼 → Web)"
+            )
+          );
+          return;
+        }
+        resolve();
+      });
     };
 
     script.onerror = () => {
