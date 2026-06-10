@@ -21,6 +21,7 @@ const PARENTS = [
     latitude: 36.37352,
     longitude: 127.36708,
     markdownKo: "KAIST 대전캠퍼스 동문입니다.",
+    markdownEn: "East gate of the KAIST Daejeon campus.",
   },
   {
     key: "N1",
@@ -30,6 +31,8 @@ const PARENTS = [
     longitude: 127.36572,
     markdownKo:
       "전기및전자공학부, 전산학부 강의실 및 연구실이 위치한 건물입니다.\n\n- 지하 1층 ~ 지상 6층",
+    markdownEn:
+      "Houses the School of Electrical Engineering and the School of Computing.\n\n- B1 to 6F",
   },
   {
     key: "N2",
@@ -38,6 +41,7 @@ const PARENTS = [
     latitude: 36.37295,
     longitude: 127.36363,
     markdownKo: "행정 업무를 처리하는 분관 건물입니다.",
+    markdownEn: "Branch building for administrative affairs.",
   },
   {
     key: "N3",
@@ -47,6 +51,8 @@ const PARENTS = [
     longitude: 127.36147,
     markdownKo:
       "실내 체육관, 수영장, 헬스장이 있습니다.\n\n- 운영: 06:00~22:00\n- 주말: 09:00~18:00",
+    markdownEn:
+      "Indoor gymnasium, swimming pool, and fitness center.\n\n- Hours: 06:00–22:00\n- Weekends: 09:00–18:00",
   },
   {
     key: "N4",
@@ -55,6 +61,7 @@ const PARENTS = [
     latitude: 36.37323,
     longitude: 127.36264,
     markdownKo: "인문사회과학부 연구실 및 강의실이 위치합니다.",
+    markdownEn: "Houses labs and classrooms for the School of Digital Humanities & Computational Social Sciences.",
   },
   {
     key: "N5",
@@ -63,6 +70,7 @@ const PARENTS = [
     latitude: 36.37399,
     longitude: 127.36388,
     markdownKo: "융합 연구시설이 위치합니다.",
+    markdownEn: "Convergence research facilities.",
   },
   {
     key: "N6",
@@ -72,6 +80,8 @@ const PARENTS = [
     longitude: 127.36481,
     markdownKo:
       "교수 편의시설 및 게스트하우스입니다.\n\n- 1층: 교수회관 식당\n- 게스트룸 운영",
+    markdownEn:
+      "Faculty amenities and guest house.\n\n- 1F: Faculty restaurant\n- Guest rooms available",
   },
   {
     key: "N7",
@@ -81,6 +91,8 @@ const PARENTS = [
     longitude: 127.35871,
     markdownKo:
       "기계공학과, 항공우주공학과 연구실 및 강의실이 위치합니다.\n\n- 우주항공빌딩 포함",
+    markdownEn:
+      "Houses the Dept. of Mechanical Engineering and Dept. of Aerospace Engineering.\n\n- Includes the Space Mobility Building",
   },
   {
     key: "N9",
@@ -89,6 +101,7 @@ const PARENTS = [
     latitude: 36.37424,
     longitude: 127.36158,
     markdownKo: "실습 시설이 위치합니다.",
+    markdownEn: "Hands-on practice facilities.",
   },
   {
     key: "N10",
@@ -97,6 +110,7 @@ const PARENTS = [
     latitude: 36.37416,
     longitude: 127.36041,
     markdownKo: "교직원분관 건물입니다.",
+    markdownEn: "Undergraduate branch library building.",
   },
   {
     key: "N11",
@@ -105,6 +119,7 @@ const PARENTS = [
     latitude: 36.37389,
     longitude: 127.35943,
     markdownKo: "KAIST 학생식당입니다.",
+    markdownEn: "KAIST student cafeteria.",
   },
   {
     key: "N12",
@@ -112,8 +127,8 @@ const PARENTS = [
     titleEn: "Student Center 2 (N12)",
     latitude: 36.37418,
     longitude: 127.35982,
-    markdownKo:
-      "북측 식당가 및 복지동이 모여있는 건물입니다.",
+    markdownKo: "북측 식당가 및 복지동이 모여있는 건물입니다.",
+    markdownEn: "North-side dining area and welfare building.",
   },
   {
     key: "N13",
@@ -122,6 +137,7 @@ const PARENTS = [
     latitude: 36.37305,
     longitude: 127.36003,
     markdownKo: "학부 강의 및 학생 편의시설이 있는 건물입니다.",
+    markdownEn: "Undergraduate classrooms and student amenities.",
   },
   {
     key: "N13-1",
@@ -130,6 +146,7 @@ const PARENTS = [
     latitude: 36.37313,
     longitude: 127.36047,
     markdownKo: "학생 자치활동 공간 및 편의시설이 위치합니다.",
+    markdownEn: "Student government spaces and amenities.",
   },
   {
     key: "N14",
@@ -138,6 +155,7 @@ const PARENTS = [
     latitude: 36.37379,
     longitude: 127.35833,
     markdownKo: "학부생 기숙사입니다.\n\n- 2인실\n- 세탁실, 휴게실 구비",
+    markdownEn: "Undergraduate dormitory.\n\n- Double rooms\n- Laundry & lounge available",
   },
   {
     key: "N15",
@@ -146,6 +164,7 @@ const PARENTS = [
     latitude: 36.37488,
     longitude: 127.35983,
     markdownKo: "교직원 숙소입니다.",
+    markdownEn: "Staff accommodation.",
   },
   {
     key: "N16",
@@ -154,6 +173,7 @@ const PARENTS = [
     latitude: 36.37386,
     longitude: 127.35749,
     markdownKo: "기숙사입니다.\n\n- 1인실\n- 공용 라운지",
+    markdownEn: "Dormitory.\n\n- Single rooms\n- Shared lounge",
   },
   {
     key: "N17",
@@ -162,6 +182,7 @@ const PARENTS = [
     latitude: 36.37433,
     longitude: 127.35888,
     markdownKo: "학부생 기숙사입니다.",
+    markdownEn: "Undergraduate dormitory.",
   },
   {
     key: "N18",
@@ -170,6 +191,7 @@ const PARENTS = [
     latitude: 36.37478,
     longitude: 127.35919,
     markdownKo: "학부생 기숙사입니다.",
+    markdownEn: "Undergraduate dormitory.",
   },
   {
     key: "N19",
@@ -178,6 +200,7 @@ const PARENTS = [
     latitude: 36.37414,
     longitude: 127.35653,
     markdownKo: "학부생 기숙사입니다.",
+    markdownEn: "Undergraduate dormitory.",
   },
   {
     key: "N20",
@@ -186,6 +209,7 @@ const PARENTS = [
     latitude: 36.37529,
     longitude: 127.35899,
     markdownKo: "학부생 기숙사입니다.",
+    markdownEn: "Undergraduate dormitory.",
   },
   {
     key: "N21",
@@ -194,6 +218,7 @@ const PARENTS = [
     latitude: 36.37594,
     longitude: 127.35854,
     markdownKo: "학부생 기숙사입니다.",
+    markdownEn: "Undergraduate dormitory.",
   },
   {
     key: "N22",
@@ -202,6 +227,7 @@ const PARENTS = [
     latitude: 36.37479,
     longitude: 127.36425,
     markdownKo: "동문 창업 지원 시설입니다.",
+    markdownEn: "Alumni startup support facility.",
   },
   {
     key: "N23",
@@ -210,6 +236,7 @@ const PARENTS = [
     latitude: 36.37542,
     longitude: 127.36407,
     markdownKo: "fMRI 연구 센터입니다.",
+    markdownEn: "fMRI research center.",
   },
   {
     key: "N24",
@@ -218,6 +245,7 @@ const PARENTS = [
     latitude: 36.37534,
     longitude: 127.36357,
     markdownKo: "산업디자인학과 및 LG 연구시설이 위치합니다.",
+    markdownEn: "Houses the Dept. of Industrial Design and LG research facilities.",
   },
   {
     key: "N25",
@@ -226,6 +254,7 @@ const PARENTS = [
     latitude: 36.37372,
     longitude: 127.36191,
     markdownKo: "산업디자인학과 연구실 및 강의실이 위치합니다.",
+    markdownEn: "Labs and classrooms for the Dept. of Industrial Design.",
   },
   {
     key: "N26",
@@ -234,6 +263,7 @@ const PARENTS = [
     latitude: 36.37547,
     longitude: 127.36160,
     markdownKo: "고성능 집적시스템 연구 센터입니다.",
+    markdownEn: "Research center for high-performance integrated systems.",
   },
   {
     key: "N27",
@@ -242,6 +272,7 @@ const PARENTS = [
     latitude: 36.37551,
     longitude: 127.36072,
     markdownKo: "학부생 기숙사입니다.",
+    markdownEn: "Undergraduate dormitory.",
   },
   {
     key: "N28",
@@ -250,6 +281,7 @@ const PARENTS = [
     latitude: 36.37546,
     longitude: 127.36252,
     markdownKo: "에너지 및 환경 관련 연구 센터입니다.",
+    markdownEn: "Research center for energy and environment.",
   },
   {
     key: "N29",
@@ -258,6 +290,7 @@ const PARENTS = [
     latitude: 36.37539,
     longitude: 127.35989,
     markdownKo: "메타융합 연구시설입니다.",
+    markdownEn: "Meta-convergence research facility.",
   },
 
   // ════════════════════════════════════════════
@@ -270,6 +303,7 @@ const PARENTS = [
     latitude: 36.36569,
     longitude: 127.36384,
     markdownKo: "KAIST 대전캠퍼스 정문입니다.",
+    markdownEn: "Main gate of the KAIST Daejeon campus.",
   },
   {
     key: "E2",
@@ -277,8 +311,8 @@ const PARENTS = [
     titleEn: "Industrial Engineering & Management Building (E2)",
     latitude: 36.36729,
     longitude: 127.36430,
-    markdownKo:
-      "산업및시스템공학과, 데이터사이언스대학원이 위치합니다.",
+    markdownKo: "산업및시스템공학과, 데이터사이언스대학원이 위치합니다.",
+    markdownEn: "Houses the Dept. of Industrial & Systems Engineering and the Graduate School of Data Science.",
   },
   {
     key: "E3",
@@ -286,8 +320,8 @@ const PARENTS = [
     titleEn: "Information & Electronics Building (E3)",
     latitude: 36.36871,
     longitude: 127.36550,
-    markdownKo:
-      "전산학부, 전기및전자공학부 연구실 및 강의실이 위치합니다.",
+    markdownKo: "전산학부, 전기및전자공학부 연구실 및 강의실이 위치합니다.",
+    markdownEn: "Houses labs and classrooms for the School of Computing and the School of Electrical Engineering.",
   },
   {
     key: "E3-1",
@@ -297,6 +331,8 @@ const PARENTS = [
     longitude: 127.36575,
     markdownKo:
       "전산학부 연구실 및 강의실이 위치합니다.\n\n- 알고리즘 랩\n- AI 연구실\n- 시스템 연구실",
+    markdownEn:
+      "School of Computing labs and classrooms.\n\n- Algorithm Lab\n- AI Research Lab\n- Systems Research Lab",
   },
   {
     key: "E4",
@@ -305,6 +341,7 @@ const PARENTS = [
     latitude: 36.36821,
     longitude: 127.36388,
     markdownKo: "KAIST 융합연구원 건물입니다.\n\n- 산학협력 센터\n- 회의실",
+    markdownEn: "KAIST Institute building.\n\n- Industry-academia cooperation center\n- Conference rooms",
   },
   {
     key: "E5",
@@ -313,6 +350,7 @@ const PARENTS = [
     latitude: 36.36928,
     longitude: 127.36363,
     markdownKo: "교직원 편의시설입니다.",
+    markdownEn: "Faculty amenities.",
   },
   {
     key: "E6",
@@ -320,8 +358,8 @@ const PARENTS = [
     titleEn: "Natural Science Building (E6)",
     latitude: 36.36983,
     longitude: 127.36451,
-    markdownKo:
-      "수리과학과, 물리학과, 생명과학과 등이 위치합니다.",
+    markdownKo: "수리과학과, 물리학과, 생명과학과 등이 위치합니다.",
+    markdownEn: "Houses the Dept. of Mathematical Sciences, Physics, and Biological Sciences.",
   },
   {
     key: "E7",
@@ -330,6 +368,7 @@ const PARENTS = [
     latitude: 36.36910,
     longitude: 127.36640,
     markdownKo: "기초과학 연구시설이 위치합니다.",
+    markdownEn: "Basic science research facilities.",
   },
   {
     key: "E8",
@@ -338,6 +377,7 @@ const PARENTS = [
     latitude: 36.37111,
     longitude: 127.36656,
     markdownKo: "강의실 및 연구실이 위치합니다.",
+    markdownEn: "Classrooms and research offices.",
   },
   {
     key: "E9",
@@ -345,8 +385,8 @@ const PARENTS = [
     titleEn: "Academic Cultural Complex (E9)",
     latitude: 36.36959,
     longitude: 127.36240,
-    markdownKo:
-      "중앙도서관, 열람실, 세미나실이 있는 학술문화관입니다.",
+    markdownKo: "중앙도서관, 열람실, 세미나실이 있는 학술문화관입니다.",
+    markdownEn: "Academic cultural complex with the main library, reading rooms, and seminar halls.",
   },
   {
     key: "E10",
@@ -355,6 +395,7 @@ const PARENTS = [
     latitude: 36.37127,
     longitude: 127.36535,
     markdownKo: "중앙 물류 창고 및 KAIST 미술관이 위치합니다.",
+    markdownEn: "Central warehouse and KAIST Art Museum.",
   },
   {
     key: "E11",
@@ -362,8 +403,8 @@ const PARENTS = [
     titleEn: "Student Affairs Building (E11)",
     latitude: 36.37046,
     longitude: 127.36262,
-    markdownKo:
-      "입학처, 학생복지, 학생생활처가 위치합니다.",
+    markdownKo: "입학처, 학생복지, 학생생활처가 위치합니다.",
+    markdownEn: "Houses the Office of Admissions, Student Welfare, and Office of Student Life.",
   },
   {
     key: "E12",
@@ -372,6 +413,7 @@ const PARENTS = [
     latitude: 36.37124,
     longitude: 127.36444,
     markdownKo: "중앙 기계설비 시설입니다.",
+    markdownEn: "Central mechanical equipment facility.",
   },
   {
     key: "E14",
@@ -381,6 +423,8 @@ const PARENTS = [
     longitude: 127.36116,
     markdownKo:
       "KAIST 본관입니다.\n\n- 교학처\n- 연구처\n- 기획예산처\n- 행정처",
+    markdownEn:
+      "KAIST main administration building.\n\n- Office of Academic Affairs\n- Office of Research Affairs\n- Office of Planning and Budget\n- Office of Administration",
   },
   {
     key: "E15",
@@ -390,6 +434,8 @@ const PARENTS = [
     longitude: 127.36317,
     markdownKo:
       "KAIST 대강당입니다.\n\n- 공연, 입학식, 졸업식 등 대규모 행사\n- 약 1,000석 규모",
+    markdownEn:
+      "KAIST main auditorium.\n\n- Performances, matriculation, commencement, and other major events\n- Approx. 1,000 seats",
   },
   {
     key: "E16",
@@ -399,6 +445,8 @@ const PARENTS = [
     longitude: 127.36184,
     markdownKo:
       "강의실 및 연구실이 위치합니다.\n\n- 바이오및뇌공학과\n- 의과학대학원",
+    markdownEn:
+      "Classrooms and research offices.\n\n- Dept. of Bio and Brain Engineering\n- Graduate School of Medical Science and Engineering",
   },
   {
     key: "E17",
@@ -407,6 +455,7 @@ const PARENTS = [
     latitude: 36.36956,
     longitude: 127.36849,
     markdownKo: "KAIST 캠퍼스 운동장입니다.",
+    markdownEn: "KAIST campus sports field.",
   },
   {
     key: "E18",
@@ -415,6 +464,7 @@ const PARENTS = [
     latitude: 36.36825,
     longitude: 127.36816,
     markdownKo: "질환 모델 동물 연구 센터입니다.",
+    markdownEn: "Disease-model animal research center.",
   },
   {
     key: "E19",
@@ -423,6 +473,7 @@ const PARENTS = [
     latitude: 36.36826,
     longitude: 127.36685,
     markdownKo: "KAIST 부설 나노종합기술원입니다.",
+    markdownEn: "KAIST-affiliated National Nano Fab Center.",
   },
   {
     key: "E20",
@@ -431,6 +482,7 @@ const PARENTS = [
     latitude: 36.37254,
     longitude: 127.36704,
     markdownKo: "기숙사입니다.",
+    markdownEn: "Dormitory.",
   },
   {
     key: "E21",
@@ -440,6 +492,8 @@ const PARENTS = [
     longitude: 127.36987,
     markdownKo:
       "KAIST 교내 건강관리센터\n\n- 운영: 09:00~17:30\n- 점심: 12:00~13:00\n- 주말/공휴일 휴무\n- 일반진료, 건강검진",
+    markdownEn:
+      "KAIST on-campus health care center.\n\n- Hours: 09:00–17:30\n- Lunch break: 12:00–13:00\n- Closed on weekends & holidays\n- General care, health checkups",
   },
   {
     key: "E22",
@@ -448,6 +502,7 @@ const PARENTS = [
     latitude: 36.36933,
     longitude: 127.36699,
     markdownKo: "기초과학연구원 KAIST 캠퍼스 연구동입니다.",
+    markdownEn: "Institute for Basic Science research building on KAIST campus.",
   },
 
   // ════════════════════════════════════════════
@@ -459,8 +514,8 @@ const PARENTS = [
     titleEn: "Applied Engineering Building (W1)",
     latitude: 36.36575,
     longitude: 127.36131,
-    markdownKo:
-      "신소재공학과, 건설및환경공학과, 생명화학공학과가 위치합니다.",
+    markdownKo: "신소재공학과, 건설및환경공학과, 생명화학공학과가 위치합니다.",
+    markdownEn: "Houses the Dept. of Materials Science & Engineering, Civil & Environmental Engineering, and Chemical & Biomolecular Engineering.",
   },
   {
     key: "W2",
@@ -468,8 +523,8 @@ const PARENTS = [
     titleEn: "Student Center 1 (W2)",
     latitude: 36.36708,
     longitude: 127.36077,
-    markdownKo:
-      "서측 식당가 및 학생 편의시설이 위치합니다.",
+    markdownKo: "서측 식당가 및 학생 편의시설이 위치합니다.",
+    markdownEn: "West-side dining area and student amenities.",
   },
   {
     key: "W3",
@@ -478,6 +533,7 @@ const PARENTS = [
     latitude: 36.36739,
     longitude: 127.35791,
     markdownKo: "기숙사입니다.\n\n- 1인실/2인실\n- 세탁실 구비",
+    markdownEn: "Dormitory.\n\n- Single / double rooms\n- Laundry room available",
   },
   {
     key: "W4",
@@ -487,6 +543,8 @@ const PARENTS = [
     longitude: 127.35689,
     markdownKo:
       "서측 기숙사 단지입니다.\n\n- 희망관(Peace Hall)\n- 나눔관\n- 꿈나래관(Dream Hall)",
+    markdownEn:
+      "West dormitory complex.\n\n- Peace Hall\n- Nanum Hall\n- Dream Hall",
   },
   {
     key: "W5",
@@ -494,8 +552,8 @@ const PARENTS = [
     titleEn: "International Village (W5)",
     latitude: 36.36972,
     longitude: 127.35562,
-    markdownKo:
-      "미르관, 나래관, 인터내셔널빌리지가 위치합니다.",
+    markdownKo: "미르관, 나래관, 인터내셔널빌리지가 위치합니다.",
+    markdownEn: "Mir Hall, Narae Hall, and International Village.",
   },
   {
     key: "W6",
@@ -504,6 +562,7 @@ const PARENTS = [
     latitude: 36.37043,
     longitude: 127.35601,
     markdownKo: "대학원생 기숙사입니다.\n\n- 1인실/2인실\n- 공용 주방 있음",
+    markdownEn: "Graduate dormitory.\n\n- Single / double rooms\n- Shared kitchen",
   },
   {
     key: "W7",
@@ -512,6 +571,7 @@ const PARENTS = [
     latitude: 36.37106,
     longitude: 127.35580,
     markdownKo: "연구동입니다.",
+    markdownEn: "Research building.",
   },
   {
     key: "W8",
@@ -520,6 +580,7 @@ const PARENTS = [
     latitude: 36.36996,
     longitude: 127.35993,
     markdownKo: "교육 지원 시설이 위치합니다.",
+    markdownEn: "Educational support facilities.",
   },
   {
     key: "W9",
@@ -528,6 +589,7 @@ const PARENTS = [
     latitude: 36.37095,
     longitude: 127.35815,
     markdownKo: "야외 공연장입니다.",
+    markdownEn: "Outdoor amphitheater.",
   },
   {
     key: "W10",
@@ -536,6 +598,7 @@ const PARENTS = [
     latitude: 36.37137,
     longitude: 127.35687,
     markdownKo: "풍동 실험 시설입니다.",
+    markdownEn: "Wind tunnel laboratory.",
   },
   {
     key: "W11",
@@ -544,6 +607,7 @@ const PARENTS = [
     latitude: 36.37209,
     longitude: 127.35626,
     markdownKo: "외국인 교수 숙소입니다.",
+    markdownEn: "Accommodation for international faculty.",
   },
   {
     key: "W13",
@@ -552,6 +616,7 @@ const PARENTS = [
     latitude: 36.36616,
     longitude: 127.36035,
     markdownKo: "메타융합 연구시설입니다.",
+    markdownEn: "Meta-convergence research facility.",
   },
   {
     key: "W14",
@@ -560,6 +625,7 @@ const PARENTS = [
     latitude: 36.36581,
     longitude: 127.36057,
     markdownKo: "롯데-KAIST 산학협력 R&D 센터입니다.",
+    markdownEn: "LOTTE-KAIST industry-academia R&D center.",
   },
 ];
 
@@ -574,6 +640,7 @@ type ChildDef = {
   longitude: number;
   category: "dining" | "cafe" | "facility" | "library" | "etc" | "bus";
   markdownKo: string;
+  markdownEn: string;
   dynamicType: "none" | "dining" | "bus" | "event";
 };
 
@@ -588,6 +655,8 @@ const CHILDREN: ChildDef[] = [
     category: "dining",
     markdownKo:
       "맛있는 규동과 오니기리를 판매합니다.\n\n- 운영시간\n  - 평일 9:00~19:30\n  - 토요일 9:00~17:30\n  - 일요일 및 공휴일 휴무\n  - Break time: 14:30~16:30",
+    markdownEn:
+      "Serves gyudon (beef bowl) and onigiri.\n\n- Hours\n  - Weekdays 9:00–19:30\n  - Saturdays 9:00–17:30\n  - Closed on Sundays & holidays\n  - Break time: 14:30–16:30",
     dynamicType: "dining",
   },
   {
@@ -599,6 +668,8 @@ const CHILDREN: ChildDef[] = [
     category: "dining",
     markdownKo:
       "파스타, 리조또 전문점입니다.\n\n- 운영시간: 11:00~20:00\n- Break time: 15:00~16:30\n- 토/일/공휴일 휴무",
+    markdownEn:
+      "Pasta and risotto restaurant.\n\n- Hours: 11:00–20:00\n- Break time: 15:00–16:30\n- Closed on weekends & holidays",
     dynamicType: "dining",
   },
   {
@@ -610,6 +681,8 @@ const CHILDREN: ChildDef[] = [
     category: "dining",
     markdownKo:
       "타코, 부리토 전문점입니다.\n\n- 운영시간: 11:00~19:30\n- Break time: 14:30~16:00",
+    markdownEn:
+      "Taco and burrito restaurant.\n\n- Hours: 11:00–19:30\n- Break time: 14:30–16:00",
     dynamicType: "dining",
   },
   {
@@ -621,6 +694,8 @@ const CHILDREN: ChildDef[] = [
     category: "dining",
     markdownKo:
       "한식 분식 전문점입니다.\n\n- 운영시간: 11:00~20:00\n- Break time: 14:30~16:30",
+    markdownEn:
+      "Korean casual dining restaurant.\n\n- Hours: 11:00–20:00\n- Break time: 14:30–16:30",
     dynamicType: "dining",
   },
   {
@@ -632,6 +707,8 @@ const CHILDREN: ChildDef[] = [
     category: "dining",
     markdownKo:
       "채식 위주 식당입니다.\n\n- 운영시간: 11:00~14:00, 17:00~19:00\n- 비건/채식 메뉴 제공",
+    markdownEn:
+      "Vegetarian-friendly restaurant.\n\n- Hours: 11:00–14:00, 17:00–19:00\n- Vegan / vegetarian menu available",
     dynamicType: "dining",
   },
   {
@@ -643,6 +720,8 @@ const CHILDREN: ChildDef[] = [
     category: "dining",
     markdownKo:
       "KAIST 구내식당\n\n- 조식 8:00~9:00 (3,500원)\n- 중식 11:20~13:00 (5,500원)\n- 석식 17:00~18:30",
+    markdownEn:
+      "KAIST campus cafeteria.\n\n- Breakfast 8:00–9:00 (₩3,500)\n- Lunch 11:20–13:00 (₩5,500)\n- Dinner 17:00–18:30",
     dynamicType: "dining",
   },
 
@@ -655,6 +734,7 @@ const CHILDREN: ChildDef[] = [
     longitude: 127.36538,
     category: "cafe",
     markdownKo: "- 운영시간: 08:00~22:00\n- 위치: N1 1층",
+    markdownEn: "- Hours: 08:00–22:00\n- Location: N1, 1F",
     dynamicType: "none",
   },
 
@@ -668,6 +748,8 @@ const CHILDREN: ChildDef[] = [
     category: "library",
     markdownKo:
       "KAIST 중앙 도서관입니다.\n\n- 운영시간\n  - 학기중: 08:00~22:00\n  - 방학중: 09:00~18:00\n- 열람실: 24시간 (학기중)\n- 그룹 스터디룸 예약 가능",
+    markdownEn:
+      "KAIST main library.\n\n- Hours\n  - Semester: 08:00–22:00\n  - Vacation: 09:00–18:00\n- Reading room: 24 hours (during semester)\n- Group study rooms available for reservation",
     dynamicType: "none",
   },
 
@@ -681,6 +763,8 @@ const CHILDREN: ChildDef[] = [
     category: "facility",
     markdownKo:
       "KAIST 실내 수영장\n\n- 운영: 06:00~08:00, 12:00~13:00, 18:00~21:00\n- 주말: 10:00~17:00\n- 레인: 6개",
+    markdownEn:
+      "KAIST indoor swimming pool.\n\n- Hours: 06:00–08:00, 12:00–13:00, 18:00–21:00\n- Weekends: 10:00–17:00\n- Lanes: 6",
     dynamicType: "none",
   },
   {
@@ -692,6 +776,8 @@ const CHILDREN: ChildDef[] = [
     category: "facility",
     markdownKo:
       "KAIST 헬스장\n\n- 운영: 06:00~22:00\n- 주말: 09:00~18:00\n- 재학생 무료 이용",
+    markdownEn:
+      "KAIST fitness center.\n\n- Hours: 06:00–22:00\n- Weekends: 09:00–18:00\n- Free for enrolled students",
     dynamicType: "none",
   },
   {
@@ -701,8 +787,8 @@ const CHILDREN: ChildDef[] = [
     latitude: 36.37245,
     longitude: 127.36140,
     category: "facility",
-    markdownKo:
-      "실내 농구/배드민턴 코트\n\n- 예약제 운영\n- KAIST 포털에서 예약",
+    markdownKo: "실내 농구/배드민턴 코트\n\n- 예약제 운영\n- KAIST 포털에서 예약",
+    markdownEn: "Indoor basketball / badminton court.\n\n- Reservation required\n- Book via KAIST portal",
     dynamicType: "none",
   },
   {
@@ -712,8 +798,8 @@ const CHILDREN: ChildDef[] = [
     latitude: 36.37237,
     longitude: 127.36022,
     category: "facility",
-    markdownKo:
-      "실외 풋살장\n\n- 인조잔디\n- KAIST 포털에서 예약",
+    markdownKo: "실외 풋살장\n\n- 인조잔디\n- KAIST 포털에서 예약",
+    markdownEn: "Outdoor futsal court.\n\n- Artificial turf\n- Book via KAIST portal",
     dynamicType: "none",
   },
 
@@ -727,6 +813,8 @@ const CHILDREN: ChildDef[] = [
     category: "dining",
     markdownKo:
       "교수회관 1층 식당입니다.\n\n- 중식 11:30~13:30\n- 석식 17:30~19:00\n- 한식 위주, 정식 메뉴",
+    markdownEn:
+      "Faculty House 1F restaurant.\n\n- Lunch 11:30–13:30\n- Dinner 17:30–19:00\n- Korean set menu",
     dynamicType: "dining",
   },
 
@@ -738,8 +826,8 @@ const CHILDREN: ChildDef[] = [
     latitude: 36.36806,
     longitude: 127.36578,
     category: "cafe",
-    markdownKo:
-      "전산학부동 1층 카페입니다.\n\n- 운영시간: 08:30~18:00\n- 주말 휴무",
+    markdownKo: "전산학부동 1층 카페입니다.\n\n- 운영시간: 08:30~18:00\n- 주말 휴무",
+    markdownEn: "Cafe on the 1F of the School of Computing building.\n\n- Hours: 08:30–18:00\n- Closed on weekends",
     dynamicType: "none",
   },
 ];
@@ -754,8 +842,8 @@ const STANDALONE = [
     latitude: 36.36785,
     longitude: 127.36294,
     category: "facility" as const,
-    markdownKo:
-      "KAIST 캠퍼스 내 오리연못입니다.\n\n- 산책로\n- 벤치 있음",
+    markdownKo: "KAIST 캠퍼스 내 오리연못입니다.\n\n- 산책로\n- 벤치 있음",
+    markdownEn: "Duck pond on the KAIST campus.\n\n- Walking trail\n- Benches available",
     dynamicType: "none" as const,
   },
   {
@@ -764,8 +852,8 @@ const STANDALONE = [
     latitude: 36.37387,
     longitude: 127.35929,
     category: "etc" as const,
-    markdownKo:
-      "KAIST 캠퍼스 내 우체국\n\n- 운영: 09:00~18:00\n- 토/일/공휴일 휴무",
+    markdownKo: "KAIST 캠퍼스 내 우체국\n\n- 운영: 09:00~18:00\n- 토/일/공휴일 휴무",
+    markdownEn: "Post office on campus.\n\n- Hours: 09:00–18:00\n- Closed on weekends & holidays",
     dynamicType: "none" as const,
   },
   {
@@ -775,6 +863,7 @@ const STANDALONE = [
     longitude: 127.35846,
     category: "etc" as const,
     markdownKo: "캠퍼스 인근 교회입니다.",
+    markdownEn: "Church near the campus.",
     dynamicType: "none" as const,
   },
 ];
@@ -808,6 +897,7 @@ async function seedMarkers() {
       longitude: p.longitude,
       category: "building",
       markdownKo: p.markdownKo,
+      markdownEn: p.markdownEn,
       dynamicType: "none",
       createdBy: admin._id,
       status: "active",
@@ -822,7 +912,7 @@ async function seedMarkers() {
   for (const c of CHILDREN) {
     const parentId = parentMap.get(c.parentKey);
     if (!parentId) {
-      console.warn(`[Seed] ⚠️ parentKey "${c.parentKey}" 를 찾을 수 없어 스킵: ${c.titleKo}`);
+      console.warn(`[Seed] parentKey "${c.parentKey}" 를 찾을 수 없어 스킵: ${c.titleKo}`);
       continue;
     }
     await Marker.create({
@@ -832,6 +922,7 @@ async function seedMarkers() {
       longitude: c.longitude,
       category: c.category,
       markdownKo: c.markdownKo,
+      markdownEn: c.markdownEn,
       dynamicType: c.dynamicType,
       createdBy: admin._id,
       status: "active",
@@ -853,7 +944,7 @@ async function seedMarkers() {
   console.log(`[Seed] 단독 마커 ${STANDALONE.length}개 생성`);
 
   const total = parentMap.size + childCount + STANDALONE.length;
-  console.log(`[Seed] ✅ 총 ${total}개 마커 시드 완료`);
+  console.log(`[Seed] 총 ${total}개 마커 시드 완료`);
 
   await mongoose.disconnect();
 }

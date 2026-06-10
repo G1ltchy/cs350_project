@@ -34,7 +34,7 @@ async function seedAdmin() {
   console.log(`[Seed] Admin 계정 생성 완료`);
   console.log(`  ID: ${ADMIN_USERNAME}`);
   console.log(`  PW: ${ADMIN_PASSWORD}`);
-  console.log(`  ⚠️  로그인 후 반드시 비밀번호를 변경하세요.`);
+  console.log(`  로그인 후 반드시 비밀번호를 변경하세요.`);
 
   await mongoose.disconnect();
 }
